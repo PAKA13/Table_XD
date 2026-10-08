@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no, viewport-fit=cover">
+  <title>Table_XD</title>
+  <link rel="stylesheet" href="./ProTAB_files/app.css">
+  
+  <style>
+    .aviso-escritorio { display: none; }
+    html.solo-escritorio, html.solo-escritorio body { overflow: hidden; }
+    html.solo-escritorio .aviso-escritorio {
+      position: fixed; inset: 0; z-index: 2147483647;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #0d3533 0%, #1b5750 100%);
+      color: #fff; text-align: center;
+      font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .aviso-escritorio-caja { max-width: 360px; }
+    .aviso-escritorio img { width: 170px; margin-bottom: 28px; }
+    .aviso-escritorio h1 { font-size: 22px; font-weight: 700; margin: 0 0 12px; }
+    .aviso-escritorio p { font-size: 15px; line-height: 1.5; margin: 0; color: rgba(255,255,255,0.8); }
+  </style>
+  <script>
+    (function () {
+      if (window.__TAURI_INTERNALS__ || window.__TAURI__) return;
+      if (/[?&]movil=1(&|$)/.test(location.search)) return;
+      var ua = navigator.userAgent || '';
+
+
+      var celular = /iPhone|iPod|Android.*Mobile|Windows Phone|BlackBerry|Opera Mini|IEMobile/i.test(ua);
+
+
+      var sinMouse = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+      var chica = Math.min(screen.width, screen.height) < 600;
+      if (celular || (sinMouse && chica)) document.documentElement.className += ' solo-escritorio';
+    })();
+</script>
+</head>
+<body>
+
+  <div class="aviso-escritorio" role="alert">
+    <div class="aviso-escritorio-caja">
+      <img src="./ProTAB_files/table-xd-logo.svg" alt="Table_XD">
+      <h1>Diseña desde tu computadora o tablet</h1>
+      <p>Para trabajar cómodamente en Table_XD, abre el editor desde una computadora o tablet.</p>
+    </div>
+  </div>
+
+  
+  
+  <div id="nuevoProy_overlay" class="np-overlay" style="display:none">
+    <form class="np-card" onsubmit="event.preventDefault(); confirmarNuevoProyecto();">
+      <div class="np-titulo" id="np_titulo">Crear un proyecto</div>
+      <div class="np-seccion">Tablero</div>
+      <div class="np-grid">
+        <label for="np_nombre">Nombre</label>
+        
+        <div class="np-nombre-wrap">
+          <input type="text" id="np_nombre" autocomplete="off">
+          <button type="button" class="np-sug-btn" id="np_sug_btn" aria-label="Tableros comunes">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="np-sug-lista" id="np_sug_lista" style="display:none"></div>
+        </div>
+        <label for="np_abrev">Abreviatura</label>
+        <input type="text" id="np_abrev" autocomplete="off">
+      </div>
+      <div class="np-seccion">Gabinete</div>
+      <div class="np-grid">
+        <label>Tipo de fijación</label>
+        <div class="np-seg" id="np_tipo">
+          <button type="button" data-val="adosado">Adosado</button>
+          <button type="button" data-val="empotrado">Empotrado</button>
+        </div>
+      </div>
+      <div class="np-seccion">Sistema eléctrico</div>
+      <div class="np-grid">
+        
+        <label>Fases</label>
+        <div class="np-seg" id="np_fases_seg">
+          <button type="button" data-val="3F">3F</button>
+          <button type="button" data-val="3F+N">3F+N</button>
+          <button type="button" data-val="2F">2F</button>
+          <button type="button" data-val="1F+N">1F+N</button>
+        </div>
+        <select id="np_fases" class="np-oculto" tabindex="-1" aria-hidden="true">
+          <option value="" disabled="">— Fase —</option>
+          <option value="3F">3F</option>
+          <option value="3F+N">3F+N</option>
+          <option value="2F">2F</option>
+          <option value="1F+N">1F+N</option>
+        </select>
+        <label for="np_polos">N° polos</label>
+        <div class="np-paso">
+          <button type="button" class="np-paso-btn" data-paso="-2" aria-label="Menos polos">−</button>
+          <input type="number" inputmode="numeric" id="np_polos" class="no-spinner" min="2" max="60" step="2">
+          <button type="button" class="np-paso-btn" data-paso="2" aria-label="Más polos">+</button>
+        </div>
+        
+        <label for="np_tension">Tensión</label>
+        <select id="np_tension"></select>
+        <label>Barra de Tierra (PE)</label>
+        <div class="np-seg" id="np_barra_seg">
+          <button type="button" data-val="pe">Barra PE</button>
+          <button type="button" data-val="pe+ais">PE + Aislada</button>
+          <button type="button" data-val="ais">Aislada</button>
+          <button type="button" data-val="ninguno">Ninguna</button>
+        </div>
+        <select id="np_barra_pe" class="np-oculto" tabindex="-1" aria-hidden="true">
+          <option value="pe">Con Barra PE</option>
+          <option value="pe+ais">Con Barra PE + Barra PE Aislada</option>
+          <option value="ais">Con Barra PE Aislada</option>
+          <option value="ninguno">Ninguno</option>
+        </select>
+        <label>Frecuencia</label>
+        <div class="np-seg" id="np_frecuencia">
+          <button type="button" data-val="60 Hz">60 Hz</button>
+          <button type="button" data-val="50 Hz">50 Hz</button>
+        </div>
+      </div>
+      <div class="np-error" id="np_error"></div>
+      <div class="np-botones">
+        <button type="button" class="np-btn" onclick="cerrarNuevoProyecto()">Volver</button>
+        <button type="submit" class="np-btn np-btn-ok" id="np_ok">Comenzar proyecto</button>
+      </div>
+    </form>
+  </div>
+
+  
+  <div id="vista_editor" class="vista-editor" style="display:flex">
+
+  
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="./ProTAB_files/table-xd-logo.svg" alt="Table_XD" class="topbar-logo">
+      <span class="topbar-proyecto" id="editor_proyecto_nombre" onclick="editarNombreProyecto()" title="Modificar datos del proyecto"></span>
+    </div>
+    
+    <div class="topbar-right">
+      
+      <div class="topbar-docked" id="topbar_docked"></div>
+      <div class="modo-switch">
+        <button class="modo-btn activo" id="modo_btn_diseno" onclick="setModoEditor('diseno')">
+          
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6.5" y="2.5" width="11" height="19" rx="2"></rect>
+            <circle cx="12" cy="5.8" r="1"></circle>
+            <circle cx="12" cy="18.2" r="1"></circle>
+            <rect x="9.5" y="9" width="5" height="6" rx="1"></rect>
+            <line x1="12" y1="9" x2="12" y2="11.5"></line>
+          </svg>
+          Diseñar
+        </button>
+        <button class="modo-btn" id="modo_btn_metrado" onclick="setModoEditor('metrado')">
+          
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 2.5h6.5l4 4V17a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V4.5a2 2 0 0 1 2-2z"></path>
+            <path d="M15.5 2.5v4h4"></path>
+            <path d="M4 7v12.5A2.5 2.5 0 0 0 6.5 22H15"></path>
+            <line x1="10" y1="11" x2="16" y2="11"></line>
+            <line x1="10" y1="14.5" x2="16" y2="14.5"></line>
+          </svg>
+          Informes
+        </button>
+      </div>
+    </div>
+  </header>
+
+  
+  <div class="main-layout">
+
+    
+    <div id="modo_metrado" class="modo-panel" style="display:none">
+      <div class="metrado-tabs">
+        
+        
+        <button class="metrado-tab activo" id="metrado_tab_plano" onclick="setMetradoTab(_docUltimo.plano || 'plano')">Planos</button>
+        
+        <button class="metrado-tab" id="metrado_tab_unifilar" onclick="setMetradoTab(_docUltimo.diag || 'unifilar')">Diagramas</button>
+        <button class="metrado-tab" id="metrado_tab_control" onclick="setMetradoTab('control')" style="display:none">Diagrama de control</button>
+        <button class="metrado-tab" id="metrado_tab_ficha" onclick="setMetradoTab('ficha')">Ficha técnica</button>
+        <button class="metrado-tab" id="metrado_tab_metrado" onclick="setMetradoTab('metrado')">Lista de materiales</button>
+        <button class="metrado-tab" id="metrado_tab_senal" onclick="setMetradoTab('senal')">Lista de rótulos</button>
+        <button class="metrado-tab" id="metrado_tab_fab" onclick="setMetradoTab('fab')" style="display:none">Plano de fabricación</button>
+      </div>
+      <div class="metrado-wrap plano-doc-wrap diag-wrap" id="metrado_hoja_plano">
+        
+        <div class="plano-doc-barra">
+          <div class="diag-elegir">
+            <button type="button" class="diag-opcion activo" onclick="setMetradoTab('plano')">Plano mecánico</button>
+            <button type="button" class="diag-opcion" onclick="setMetradoTab('fab')">Plano de fabricación</button>
+          </div>
+          <button class="plano-btn-pdf exp-btn" onclick="abrirMenuExportar(this, 'plano')" title="Descargar en formato PDF o DXF">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar
+          </button>
+        </div>
+        <div id="plano_grid" class="plano-grid"></div>
+      </div>
+      
+      <div class="metrado-wrap plano-doc-wrap diag-wrap" id="metrado_hoja_unifilar" style="display:none">
+        
+        <div class="plano-doc-barra">
+          <div class="diag-elegir">
+            <button type="button" class="diag-opcion activo" onclick="elegirDiagrama('unifilar')">Diagrama unifilar</button>
+            <button type="button" class="diag-opcion" onclick="elegirDiagrama('control')">Diagrama de control</button>
+          </div>
+          <select class="plano-sel" id="uni_doc_hoja" onchange="elegirOrientacionUnifilar(this.value)" title="Orientación de la hoja">
+            <option value="horizontal">Hoja horizontal</option>
+            <option value="vertical">Hoja vertical</option>
+          </select>
+          <label class="plano-chk"><input type="checkbox" id="uni_doc_leyenda" checked="" onchange="alternarLeyendaUnifilar(this.checked)"> Leyenda</label>
+          <button class="plano-btn-pdf exp-btn" onclick="abrirMenuExportar(this, 'unifilar')" title="Descargar en formato PDF o DXF">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar
+          </button>
+        </div>
+        <div id="unifilar_doc_grid" class="plano-grid"></div>
+      </div>
+      
+      <div class="metrado-wrap ctl-doc-wrap diag-wrap" id="metrado_hoja_control" style="display:none">
+        
+        <div class="plano-doc-barra">
+          <div class="diag-elegir">
+            <button type="button" class="diag-opcion" onclick="elegirDiagrama('unifilar')">Diagrama unifilar</button>
+            <button type="button" class="diag-opcion activo" onclick="elegirDiagrama('control')">Diagrama de control</button>
+          </div>
+          <button class="plano-btn-pdf exp-btn" onclick="abrirMenuExportar(this, 'control')" title="Descargar en formato PDF o DXF">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar
+          </button>
+        </div>
+        <div id="control_doc_grid" class="ctl-grid"></div>
+      </div>
+      <div class="metrado-wrap" id="metrado_hoja_ficha" style="display:none">
+        <div id="ficha_contenido" class="ficha-grid"></div>
+      </div>
+      <div class="metrado-wrap" id="metrado_hoja_metrado" style="display:none">
+        <div id="metrado_contenido"></div>
+      </div>
+      <div class="metrado-wrap" id="metrado_hoja_senal" style="display:none">
+        <div id="senal_contenido"></div>
+      </div>
+      
+      <div class="metrado-wrap fab-wrap diag-wrap" id="metrado_hoja_fab" style="display:none">
+        
+        <div class="sn-acciones fab-barra">
+          <div class="diag-elegir">
+            <button type="button" class="diag-opcion" onclick="setMetradoTab('plano')">Plano mecánico</button>
+            <button type="button" class="diag-opcion activo" onclick="setMetradoTab('fab')">Plano de fabricación</button>
+          </div>
+          <button class="plano-btn-pdf exp-btn" onclick="abrirMenuExportar(this, 'fab')" title="Guardar como PDF">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar
+          </button>
+        </div>
+        <div id="fab_grid" class="fab-grid"></div>
+      </div>
+    </div>
+
+    
+    <div id="modo_unifilar" class="modo-panel" style="display:none">
+      <div class="plano-toolbar">
+        <div class="plano-tabs">
+          <button class="plano-tab" data-uni-vista="tablero" onclick="elegirVistaUnifilar('tablero')">Tablero</button>
+          <button class="plano-tab activo" data-uni-vista="completo" onclick="elegirVistaUnifilar('completo')">General</button>
+          <button class="plano-tab" data-uni-vista="leyenda" onclick="elegirVistaUnifilar('leyenda')">Leyenda</button>
+          
+        </div>
+        <div class="uni-acciones">
+          <div class="zoom-pill uni-zoom">
+            <button class="zoom-btn" onclick="zoomUnifilar(-0.1)" title="Alejar">−</button>
+            <span id="unifilar_zoom_val" class="zoom-val">100%</span>
+            <button class="zoom-btn" onclick="zoomUnifilar(0.1)" title="Acercar">+</button>
+            <button class="zoom-btn zoom-fit" onclick="zoomUnifilar(0)" title="Ajustar a pantalla">⛶</button>
+          </div>
+          <button class="plano-btn-pdf uni-btn-sec" id="uni_btn_dividir" onclick="alternarUnifilarDividido()" title="Ver el diagrama y el tablero lado a lado">Dividir pantalla</button>
+          
+          <button class="plano-btn-pdf" onclick="cerrarUnifilar()">Volver al tablero</button>
+        </div>
+      </div>
+      <div class="uni-wrap"><div id="unifilar_lienzo" class="uni-lienzo"></div></div>
+      <div class="uni-divisor" onpointerdown="_uniArrastrarDivisor(event)" title="Arrastra para ajustar el espacio de cada vista"></div>
+    </div>
+
+    
+    <button class="uni-btn-flotante" id="uni_btn" onclick="abrirUnifilar()" title="Ver el diagrama unifilar del tablero">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 3v18"></path><path d="M4 7h5l4-3"></path><path d="M13 7h7"></path><path d="M4 17h5l4-3"></path><path d="M13 17h7"></path>
+      </svg>
+      Diagrama unifilar
+    </button>
+    
+    <button class="uni-btn-flotante uni-btn-3d" id="visor3d_btn" onclick="abrirVisor3D()" title="Ver el panel en 3D">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2l9 5v10l-9 5-9-5V7z"></path><path d="M3 7l9 5 9-5"></path><path d="M12 12v10"></path>
+      </svg>
+      Visor 3D
+    </button>
+
+    
+    
+
+    
+    
+
+    
+    <div class="bib-wrap" id="biblioteca_wrap">
+    <aside class="biblioteca" id="biblioteca_panel">
+      <div class="bib-header">
+        
+        <div class="bib-tabs">
+          <button class="bib-tab activo" id="bib_tab_btn_estructura" onclick="bibSwitchTab('estructura')" title="Componentes">
+            
+            <svg width="13" height="16" viewBox="0 0 384 512" fill="currentColor">
+              <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+            </svg>
+          </button>
+          <button class="bib-tab" id="bib_tab_btn_cotas" onclick="bibSwitchTab('cotas')" title="Medidas">
+            
+            <svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor">
+              <path d="M.2 468.9C2.7 493.1 23.1 512 48 512l96 0 320 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-48 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-64 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-64 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-64-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-64-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-48c0-26.5-21.5-48-48-48L48 0C21.5 0 0 21.5 0 48L0 464c0 1.7 .1 3.3 .2 4.9z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="bib-body">
+       <div id="bib_tab_estructura">
+        <div class="bib-seccion">Componentes</div>
+
+        
+        <div class="bib-item" id="bib_item_gabinete" onclick="bibInsertarGabinete()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="2" width="18" height="20" rx="1"></rect>
+              <rect x="7" y="6" width="10" height="12" rx="0.5"></rect>
+              <circle cx="5" cy="4" r="0.5" fill="currentColor" stroke="none"></circle>
+              <circle cx="19" cy="4" r="0.5" fill="currentColor" stroke="none"></circle>
+              <circle cx="5" cy="20" r="0.5" fill="currentColor" stroke="none"></circle>
+              <circle cx="19" cy="20" r="0.5" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Gabinete</span>
+            <span class="bib-item-desc" id="bib_gab_estado">Sin insertar</span>
+          </div>
+          <button class="bib-item-edit" id="bib_gab_editbtn" onclick="event.stopPropagation(); abrirModalGab()" style="display:none" title="Editar gabinete">✎</button>
+        </div>
+
+        
+        <div class="bib-item bib-item-disabled" id="bib_item_pb" onclick="bibInsertarPB()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="3" x2="7" y2="21"></line>
+              <line x1="12" y1="3" x2="12" y2="21"></line>
+              <line x1="17" y1="3" x2="17" y2="21"></line>
+              <rect x="4.5" y="9.5" width="15" height="5" rx="0.5"></rect>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Panel Busbar</span>
+            <span class="bib-item-desc" id="bib_pb_estado">Requiere Gabinete</span>
+          </div>
+          <button class="bib-item-edit" id="bib_pb_editbtn" onclick="event.stopPropagation(); abrirModalPB()" style="display:none" title="Editar panel busbar">✎</button>
+        </div>
+
+        
+        <div class="bib-item bib-item-disabled" id="bib_item_ig" onclick="bibInsertarIG()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="4" width="12" height="16" rx="1"></rect>
+              <line x1="12" y1="4" x2="12" y2="1.5"></line>
+              <line x1="12" y1="20" x2="12" y2="22.5"></line>
+              <rect x="10" y="9" width="4" height="6" rx="0.5"></rect>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Interruptor General</span>
+            <span class="bib-item-desc" id="bib_ig_estado">Requiere Panel Busbar</span>
+          </div>
+          <button class="bib-item-edit" id="bib_ig_editbtn" onclick="event.stopPropagation(); abrirModalIG()" style="display:none" title="Editar interruptor general">✎</button>
+        </div>
+
+        
+        <div class="bib-item bib-item-disabled" id="bib_item_circuitos" onclick="toggleListaCircuitos()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="7" y="6" width="10" height="12" rx="1"></rect>
+              <line x1="10" y1="6" x2="10" y2="3"></line>
+              <line x1="14" y1="6" x2="14" y2="3"></line>
+              <line x1="10" y1="18" x2="10" y2="21"></line>
+              <line x1="14" y1="18" x2="14" y2="21"></line>
+              <line x1="10" y1="10" x2="14" y2="14"></line>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Circuitos Derivados</span>
+            <span class="bib-item-desc" id="bib_circuitos_estado">Requiere Panel Busbar</span>
+          </div>
+          <span class="bib-item-chevron" id="bib_circuitos_chevron">▾</span>
+        </div>
+        <div id="bib_circuitos_lista" class="bib-circuitos-lista" style="display:none"></div>
+
+        
+        <div class="bib-item" id="bib_item_pilotos" style="display:none" onclick="abrirModalPilotos()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <circle cx="12" cy="12" r="5.5"></circle>
+              <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Presencia de tensión</span>
+            <span class="bib-item-desc" id="bib_pilotos_estado">Sin insertar</span>
+          </div>
+          <button class="bib-item-edit" id="bib_pilotos_editbtn" onclick="event.stopPropagation(); abrirModalPilotos()" title="Editar">✎</button>
+        </div>
+
+        
+        <div class="bib-item" id="bib_item_rejilla" style="display:none" onclick="abrirModalRejilla()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="4.5" width="17" height="15" rx="1.5"></rect>
+              <path d="M6 8.5h12M6 12h12M6 15.5h12"></path>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Rejilla de ventilación</span>
+            <span class="bib-item-desc" id="bib_rejilla_estado">Sin insertar</span>
+          </div>
+          <button class="bib-item-edit" id="bib_rejilla_editbtn" onclick="event.stopPropagation(); abrirModalRejilla()" title="Editar">✎</button>
+        </div>
+
+        
+        <div class="bib-item" id="bib_item_medidor" style="display:none" onclick="abrirModalMedidor()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
+              <path d="M7 15 L10 10 L13 13.5 L17 8.5"></path>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Medidor multifunción</span>
+            <span class="bib-item-desc" id="bib_medidor_estado">Sin insertar</span>
+          </div>
+          <button class="bib-item-edit" id="bib_medidor_editbtn" onclick="event.stopPropagation(); abrirModalMedidor()" title="Editar">✎</button>
+        </div>
+
+        
+        <div class="bib-item bib-item-disabled" id="bib_item_otros" onclick="abrirModalOtros()">
+          <div class="bib-item-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </div>
+          <div class="bib-item-info">
+            <span class="bib-item-name">Otros</span>
+            <span class="bib-item-desc" id="bib_otros_estado">Agregar más equipos</span>
+          </div>
+        </div>
+
+        
+       </div>
+
+       
+       <div id="bib_tab_cotas" style="display:none">
+        <div class="bib-seccion">Medidas</div>
+        <div class="bib-cotas" id="bib_cotas">
+          <div class="bib-cotas-row" id="cotas_row_gab" data-familia="gab">
+            <label class="bib-cotas-check" style="--check-color:#9b59b6;">
+              <input type="checkbox" id="chk_cotas_gab" checked="" onchange="toggleCotasGab()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Gabinete</span>
+            <button class="bib-cotas-edit" onclick="abrirModalCotasCM()" title="Editar cotas de gabinete">✎</button>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_pb" data-familia="pb">
+            <label class="bib-cotas-check" style="--check-color:#D4A017;">
+              <input type="checkbox" id="chk_cotas_pb" onchange="toggleCotasPB()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Panel Busbar</span>
+            <button class="bib-cotas-edit" onclick="_hintEdicionPB()" title="Cómo editar">✎</button>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_equi" data-familia="equi">
+            <label class="bib-cotas-check" style="--check-color:#27ae60;">
+              <input type="checkbox" id="chk_cotas_equi" checked="" onchange="toggleCotasEqui()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas entre Equipos</span>
+            <button class="bib-cotas-edit" onclick="_hintEdicionCV()" title="Cómo editar">✎</button>
+          </div>
+          <div class="bib-cotas-row bib-cotas-disabled" id="cotas_row_bloque" data-familia="bloque" title="Cotas de Equipos — se habilitan en una pieza posterior (P7b)">
+            <label class="bib-cotas-check" style="--check-color:#e74c3c;">
+              <input type="checkbox" disabled="">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Equipos</span>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_mandil" data-familia="mandil">
+            <label class="bib-cotas-check" style="--check-color:#2563eb;">
+              <input type="checkbox" id="chk_cotas_ct" onchange="toggleCotasCT()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Mandil</span>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_rotulos" data-familia="rotulos">
+            <label class="bib-cotas-check" style="--check-color:#f97316;">
+              <input type="checkbox" id="chk_cotas_rotulos" onchange="toggleCotasRotulos()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Rótulos</span>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_cp" data-familia="cp">
+            <label class="bib-cotas-check" style="--check-color:#06b6d4;">
+              <input type="checkbox" id="chk_cotas_cp" checked="" onchange="toggleCotasCP()">
+              <span class="bib-cotas-box"></span>
+            </label>
+            <span class="bib-cotas-label">Cotas de Puerta</span>
+            <button class="bib-cotas-edit" id="btn_edicion_cp" onclick="_toggleEdicionCP()" title="Editar cotas de puerta">✎</button>
+          </div>
+          <div class="bib-cotas-row" id="cotas_row_reset" style="justify-content:flex-end; border-top:1px solid rgba(255,255,255,.08); margin-top:6px; padding-top:8px;">
+            <button class="bib-cotas-edit" onclick="restablecerCotas()" style="width:auto; padding:4px 10px; font-size:11.5px;" title="Vuelve todas las cotas a sus valores de fábrica">
+              Restablecer cotas
+            </button>
+          </div>
+        </div>
+       </div>
+
+      </div>
+    </aside>
+
+    
+    <button class="bib-toggle" id="bib_toggle" onclick="bibToggleColapsar()" title="Contraer panel" aria-label="Contraer panel">
+      <span id="bib_toggle_icon">›</span>
+    </button>
+    </div>
+
+    
+    <main class="canvas" id="canvas_main">
+      
+      <div id="marco_gabinete" style="display:none; position:relative;">
+        
+        <div id="img_gab_ext" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:16; pointer-events:none;"></div>
+        
+        <div id="marco_interno" style="position:absolute;">
+          <svg id="svg_marco_interno" width="100%" height="100%" preserveAspectRatio="none">
+            <rect id="rect_int_outer" fill="none" stroke="#000000" stroke-width="2"></rect>
+            <rect id="rect_int_inner" fill="none" stroke="#000000" stroke-width="2"></rect>
+          </svg>
+        </div>
+        
+        <svg id="svg_diagonales" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+          <line id="diag_tl" stroke="#000000" stroke-width="2"></line>
+          <line id="diag_tr" stroke="#000000" stroke-width="2"></line>
+          <line id="diag_bl" stroke="#000000" stroke-width="2"></line>
+          <line id="diag_br" stroke="#000000" stroke-width="2"></line>
+        </svg>
+        
+        <svg id="svg_placa_base" style="position:absolute;">
+          <rect width="100%" height="100%" fill="#F75E25"></rect>
+        </svg>
+        
+        <img src="./ProTAB_files/perno_5s16_aran_ac-vf.svg" id="perno_pb_tl" class="perno" style="position:absolute;">
+        <img src="./ProTAB_files/perno_5s16_aran_ac-vf.svg" id="perno_pb_tr" class="perno" style="position:absolute;">
+        <img src="./ProTAB_files/perno_5s16_aran_ac-vf.svg" id="perno_pb_bl" class="perno" style="position:absolute;">
+        <img src="./ProTAB_files/perno_5s16_aran_ac-vf.svg" id="perno_pb_br" class="perno" style="position:absolute;">
+        
+        <div id="panel_busbar_container" style="display:none; position:absolute; z-index:5;"></div>
+        
+        <img src="./ProTAB_files/riesgo_electrico-vf.svg" id="senaletica_riesgo_puerta" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/Rejilla-vf.svg" id="rejilla_puerta" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/Rejilla-vl.svg" id="rejilla_lateral" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/chapa_hermetica_circular-vf.svg" id="chapa_hermetica_puerta" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/chapa_hermetica_circular-vf.svg" id="chapa_hermetica_puerta_2" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/chapa_push-vf.svg" id="chapa_push_puerta" style="display:none; position:absolute;">
+        <img src="./ProTAB_files/chapa_push-vf.svg" id="chapa_push_puerta_2" style="display:none; position:absolute;">
+        <div id="marco_empotrado_exterior" style="display:none;"></div>
+        <div id="marco_empotrado_interior" style="display:none;"></div>
+        <div id="marco_empotrado_interior_der" style="display:none;"></div>
+        
+        <img src="./ProTAB_files/chapa_manija-vf.svg" id="chapa_manija_mandil" style="display:none; position:absolute; z-index:14; pointer-events:none;">
+        <img src="./ProTAB_files/chapa_manija-vf.svg" id="chapa_manija_mandil_2" style="display:none; position:absolute; z-index:14; pointer-events:none;">
+      </div>
+    </main>
+
+    
+    <aside class="sidepanel" id="sidepanel" style="display:none">
+
+      
+      <div id="modalTablero_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Tablero</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Nombre del tablero</div>
+            <input class="m1-input-text" id="tablero_nombre" type="text" maxlength="60" placeholder="Tablero general" style="width:100%">
+            <div class="m1-card-label" style="margin-top:12px;">Abreviatura</div>
+            <input class="m1-input-text" id="tablero_abrev" type="text" maxlength="20" placeholder="TG-1" style="width:100%">
+            <div class="m1-card-label" style="margin-top:12px;">Sistema</div>
+            <input class="m1-input-text" id="tablero_sistema" type="text" maxlength="40" placeholder="380/220V 3F+N 60Hz" style="width:100%">
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalTablero()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalTablero()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalBorneras_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo" id="borneras_titulo">Borneras</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div id="borneras_secciones" class="secc-lista"></div>
+            <button type="button" class="med-add" onclick="_seccAgregar('borneras_secciones', 1)">
+              + Agregar sección</button>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="borneras_btn_quitar" onclick="quitarBorneras()" style="color:#f87171; display:none;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalBorneras()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalBorneras()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalOtros_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Otros</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Equipos disponibles</div>
+            <button class="otros-opcion" onclick="seleccionarOtroEquipo('pilotos')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <circle cx="12" cy="12" r="5.5"></circle>
+                <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"></circle>
+              </svg>
+              Presencia de tensión
+            </button>
+            <button class="otros-opcion" onclick="seleccionarOtroEquipo('medidor')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="2"></rect>
+                <path d="M7 15 L10 10 L13 13.5 L17 8.5"></path>
+              </svg>
+              Medidor multifunción
+            </button>
+            <button class="otros-opcion" onclick="seleccionarOtroEquipo('rejilla')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="1.5"></rect>
+                <path d="M6 8.5h12M6 12h12M6 15.5h12"></path>
+              </svg>
+              Rejilla de ventilación
+            </button>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalOtros()">Volver</button>
+        </div>
+      </div>
+
+      
+      <div id="modalPilotos_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Presencia de tensión</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-seccion">En placa base</div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer;">
+              <input type="checkbox" id="pilotos_borneras_chk" onchange="_presenciaToggleBorneras(this.checked)">
+              Agregar borneras
+            </label>
+            <div id="pilotos_borneras_campos" style="display:none; margin-top:12px;">
+              
+              <div id="presencia_secciones" class="secc-lista"></div>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-seccion">En puerta</div>
+            <div style="display:flex; gap:12px; align-items:flex-end;">
+              <div style="flex:1 1 0; min-width:0;">
+                <div class="m1-card-label">Cantidad de LEDs</div>
+                <div class="m1-input-readonly" id="pilotos_cantidad" data-valor="1">1</div>
+              </div>
+              <div style="flex:0 0 120px;">
+                <div class="m1-card-label">Color</div>
+                <select class="m1-input-text" id="pilotos_color" style="width:100%">
+                  <option value="verde">Verde</option>
+                  <option value="rojo">Rojo</option>
+                  <option value="blanco">Blanco</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="pilotos_btn_quitar" onclick="quitarPilotos()" style="color:#f87171;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalPilotos()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalPilotos()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalRejilla_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Rejilla de ventilación</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-seccion">En placa base</div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer;">
+              <input type="checkbox" id="rejilla_borneras_chk" onchange="_rejillaToggleBorneras(this.checked)">
+              Agregar borneras
+            </label>
+            <div id="rejilla_borneras_campos" style="display:none; margin-top:12px;">
+              <div id="rejilla_secciones" class="secc-lista"></div>
+              <button type="button" class="med-add" onclick="_seccAgregar('rejilla_secciones')">
+                + Agregar sección</button>
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer; margin-top:12px;">
+              <input type="checkbox" id="rejilla_termostato_chk">
+              Agregar termostato
+            </label>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-seccion">En puerta</div>
+            <div class="m1-card-label">Medida</div>
+            <div class="m1-input-readonly">150 × 150 mm</div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="rejilla_btn_quitar" onclick="quitarRejilla()" style="color:#f87171;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalRejilla()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalRejilla()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalMedidor_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Medidor multifunción</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-seccion">Borneras</div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer;">
+              <input type="checkbox" id="medidor_borneras_chk" onchange="_medidorToggleBorneras(this.checked)">
+              Agregar borneras del medidor
+            </label>
+            <div id="medidor_borneras_campos" style="display:none; margin-top:12px;">
+              <div id="medidor_secciones" class="secc-lista"></div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="medidor_btn_quitar" onclick="quitarMedidor()" style="color:#f87171;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalMedidor()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalMedidor()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      
+      
+      <div id="modalSenalFila_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Editar rótulo</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="pdfm-grid">
+              <span>Total</span><input type="text" inputmode="numeric" class="m1-input-text" id="snFila_cant">
+              <span>Descripción</span><textarea class="m1-input-text" id="snFila_desc" rows="1" style="resize:vertical;padding-top:8px;padding-bottom:8px;font-family:inherit"></textarea>
+              <span>Medida</span><input type="text" class="m1-input-text" id="snFila_med">
+              <span style="grid-column:1/-1">Características</span>
+              <input type="text" class="m1-input-text" id="snFila_carac" style="grid-column:1/-1">
+              <label style="grid-column:1/-1;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.85)">
+                <input type="checkbox" id="snFila_caracTodas" style="margin:0;cursor:pointer">
+                Aplicar en todos
+              </label>
+              <span>Tamaño de letra</span><input type="text" class="m1-input-text" id="snFila_letra">
+            </div>
+            <div class="ficha-ed-acciones">
+              <button type="button" class="ficha-ed-btn" onclick="restablecerSenalFila()">Restablecer</button>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalSenalFila()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalSenalFila()">Guardar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalMetradoFila_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Editar fila</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="pdfm-grid">
+              <span id="mtFila_rot_lbl">Rótulos</span><input type="text" class="m1-input-text" id="mtFila_rot">
+              <span>Cantidad</span><input type="text" inputmode="numeric" class="m1-input-text" id="mtFila_qty">
+              <span>Unidad</span><input type="text" class="m1-input-text" id="mtFila_unidad">
+              <span style="grid-column:1/-1">Descripción</span>
+              <input type="text" class="m1-input-text" id="mtFila_desc" style="grid-column:1/-1">
+              <span id="mtFila_marca_lbl">Marca</span><input type="text" class="m1-input-text" id="mtFila_marca">
+            </div>
+            <div class="ficha-ed-acciones">
+              <button type="button" class="ficha-ed-btn" onclick="restablecerMetradoFila()">Restablecer</button>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalMetradoFila()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalMetradoFila()">Guardar cambios</button>
+        </div>
+      </div>
+
+      <div id="modalFicha_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo" id="modalFicha_titulo">Datos de la ficha técnica</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card" data-ficha="1">
+            <div class="m1-card-label">Características eléctricas</div>
+            <div class="pdfm-grid">
+              <span>Tensión nominal</span><input type="text" class="m1-input-text" id="ficha_tension" placeholder="380 / 220 V">
+              <span>Frecuencia</span><input type="text" class="m1-input-text" id="ficha_frecuencia" placeholder="60 Hz">
+              <span>Icc (cortocircuito)</span><input type="text" class="m1-input-text" id="ficha_icc" placeholder="10 kA">
+              <span>Tensión de aislamiento</span><input type="text" class="m1-input-text" id="ficha_uaisl" placeholder="1 kV">
+              <span>Tensión de mando</span><input type="text" class="m1-input-text" id="ficha_umando" placeholder="220 Vca">
+            </div>
+          </div>
+          <div class="m1-card" data-ficha="2">
+            <div class="m1-card-label">Normas y ensayos</div>
+            <textarea class="m1-input-text ficha-ta" id="ficha_normas" rows="3" placeholder="Una por línea"></textarea>
+          </div>
+          <div class="m1-card" data-ficha="3">
+            <div class="m1-card-label">Constructivas (lo que no sale del diseño)</div>
+            <div class="pdfm-grid">
+              <span>Lugar de instalación</span><input type="text" class="m1-input-text" id="ficha_lugar" placeholder="Interior">
+              <span>Entrada de cables</span><input type="text" class="m1-input-text" id="ficha_entrada" placeholder="Inferior">
+              <span>Acceso lateral</span><select class="m1-input-text" id="ficha_acc_lat"><option value="No">No</option><option value="Sí">Sí</option><option value="Ocultar">Ocultar</option></select>
+              <span>Acceso posterior</span><select class="m1-input-text" id="ficha_acc_pos"><option value="No">No</option><option value="Sí">Sí</option><option value="Ocultar">Ocultar</option></select>
+            </div>
+          </div>
+          <div class="m1-card" data-ficha="4">
+            <div class="m1-card-label">Componentes (no modelados)</div>
+            <div class="pdfm-grid">
+              <span>Ventilación / extracción</span><select class="m1-input-text" id="ficha_ventilacion"><option value="No">No</option><option value="Sí">Sí</option></select>
+              <span>Calefacción</span><select class="m1-input-text" id="ficha_calefaccion"><option value="No">No</option><option value="Sí">Sí</option></select>
+              <span>Iluminación interna</span><select class="m1-input-text" id="ficha_iluminacion"><option value="No">No</option><option value="Sí">Sí</option></select>
+              <span>Portacandado</span><select class="m1-input-text" id="ficha_portacandado"><option value="No">No</option><option value="Sí">Sí</option></select>
+              <span>Relé de falla de fase</span><select class="m1-input-text" id="ficha_relefase"><option value="No">No</option><option value="Sí">Sí</option></select>
+            </div>
+          </div>
+          <div class="m1-card" data-ficha="5">
+            <div class="m1-card-label">Condiciones de ambiente</div>
+            <div class="pdfm-grid">
+              <span>Temperatura de servicio</span><input type="text" class="m1-input-text" id="ficha_temperatura" placeholder="40 °C">
+              <span>Humedad relativa máx.</span><input type="text" class="m1-input-text" id="ficha_humedad" placeholder="80 % (sin condensación)">
+              <span>Altitud</span><input type="text" class="m1-input-text" id="ficha_altitud" placeholder="&lt; 1000 m">
+              <span>Tipo de ambiente</span><input type="text" class="m1-input-text" id="ficha_ambiente" placeholder="Normal">
+            </div>
+          </div>
+          <div class="m1-card" data-ficha="6">
+            <div class="m1-card-label">Cables</div>
+            <div class="ficha-ed" id="ficha_cables_ed"></div>
+          </div>
+          <div class="m1-card" data-ficha="7">
+            <div class="m1-card-label">Juego de barras</div>
+            <div class="pdfm-grid">
+              <span>Material</span><input type="text" class="m1-input-text" id="ficha_mat_barras" placeholder="Cobre electrolítico">
+              <span>Tratamiento</span><input type="text" class="m1-input-text" id="ficha_trat_barras" placeholder="Desnudo">
+            </div>
+          </div>
+          <div class="m1-card" data-ficha="8">
+            <div class="m1-card-label">Identificación</div>
+            <div class="ficha-ed" id="ficha_ident_ed"></div>
+          </div>
+          <div class="m1-card" data-ficha="9">
+            <div class="m1-card-label">Documentos de referencia</div>
+            <textarea class="m1-input-text ficha-ta" id="ficha_documentos" rows="3" placeholder="Escribe un documento por línea; Table_XD añade los informes generados."></textarea>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalFicha()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalFicha()">Guardar cambios</button>
+        </div>
+      </div>
+
+      <div id="modalPDF_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Datos del plano</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Cajetín</div>
+            <div class="pdfm-grid">
+              <span>Descripción del proyecto</span><input type="text" class="m1-input-text" id="pdf_proyecto">
+              <span>Cliente</span><input type="text" class="m1-input-text" id="pdf_cliente">
+              <span>Descripción de la página</span><input type="text" class="m1-input-text" id="pdf_titulo" placeholder="Plano mecánico">
+              <span>Proyectista</span><input type="text" class="m1-input-text" id="pdf_dis_nombre">
+              <span>Fecha</span><input type="text" class="m1-input-text" id="pdf_dis_fecha" placeholder="dd/mm/aaaa">
+              <span>N° de plano</span><input type="text" class="m1-input-text" id="pdf_plano">
+              <span>N° cotización</span><input type="text" class="m1-input-text" id="pdf_cotizacion">
+              <span>N° orden</span><input type="text" class="m1-input-text" id="pdf_orden">
+              <span>Rev.</span><input type="text" class="m1-input-text" id="pdf_rev" placeholder="1">
+              <span>Hoja</span><input type="text" class="m1-input-text" id="pdf_hoja" placeholder="1">
+              <span>Total de hojas</span><input type="text" class="m1-input-text" id="pdf_hojas_total" placeholder="1">
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalPDF()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalPDF()">Guardar PDF</button>
+        </div>
+      </div>
+
+      
+      <div id="modalIG_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Interruptor general</h2>
+        </div>
+        
+        <div class="ig-pestanias">
+          <div class="seg-ctrl" id="modalIG_tabs">
+            <button class="seg-btn activo" data-val="ig" onclick="setIGPestania('ig')">Interruptor</button>
+            <button class="seg-btn" data-val="alim" onclick="setIGPestania('alim')" disabled="">Alimentador</button>
+          </div>
+        </div>
+        <div class="m1-body">
+         <div id="modalIG_panelIG">
+          <div class="m1-card">
+            <div class="m1-card-label">Alimentador</div>
+            <label class="mgab-check" style="margin:0;">
+              <input type="checkbox" id="modalIG_alimVer" onchange="onIGAlimVer(this)">
+              <span style="font-size:12px;color:#aaa;">Proyectar alimentador</span>
+            </label>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Tipo</div>
+            <select class="m1-input-text" id="modalIG_tipo" onchange="onIGTipoChange()" style="width:100%">
+              <option value="riel" selected="">ITM Riel</option>
+              <option value="cm_fijo">ITM CM Fijo</option>
+              <option value="cm_reg">ITM CM Reg</option>
+            </select>
+          </div>
+          <div class="m1-card" style="display:flex;gap:8px;align-items:flex-end;">
+            <div style="flex:1;min-width:0;">
+              <div class="m1-card-label">Polos</div>
+              <select class="m1-input-text" id="modalIG_polos" onchange="onIGPolosChange()" style="width:100%"></select>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div class="m1-card-label">Capacidad</div>
+              <select class="m1-input-text" id="modalIG_corriente" onchange="onIGCorrienteChange()" style="width:100%">
+                <option value="">—</option>
+                <option value="6">6A</option>
+                <option value="10">10A</option>
+                <option value="16">16A</option>
+                <option value="20">20A</option>
+                <option value="25">25A</option>
+                <option value="32">32A</option>
+                <option value="40">40A</option>
+                <option value="50">50A</option>
+                <option value="63">63A</option>
+              </select>
+            </div>
+            <div style="flex:0 0 96px;display:none;" id="wrap_ig_regulacion">
+              <div class="m1-card-label">Regulación</div>
+              <div class="m1-reg-wrap"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalIG_regulacion" min="1" step="1" oninput="this.dataset.auto='0'"><span>A</span></div>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Conector a Panel Busbar</div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:nowrap;">
+              <label class="mgab-check" style="margin:0;flex-shrink:0;">
+                <input type="checkbox" id="modalIG_conectorEnabled" onchange="onIGConectorChange()">
+                <span style="font-size:12px;color:#aaa;white-space:nowrap;">Habilitar</span>
+              </label>
+              <div id="modalIG_alineacionCard" style="display:none;align-items:center;gap:8px;flex:1;min-width:0;">
+                <span style="color:#a0aec0;font-size:13px;white-space:nowrap;">Alineación:</span>
+                <select class="m1-input-text" id="modalIG_alineacion" style="flex:1;min-width:0;">
+                  <option value="R">R</option>
+                  <option value="S">S</option>
+                  <option value="T">T</option>
+                </select>
+              </div>
+            </div>
+          </div>
+         </div>
+         <div id="modalIG_panelAlim" style="display:none;">
+          <div class="m1-card">
+            <div class="m1-card-label">Llega</div>
+            <div class="seg-ctrl" id="modalAlim_llegada">
+              <button class="seg-btn" data-val="arriba" onclick="setAlimModal('modalAlim_llegada','arriba')">Por arriba</button>
+              <button class="seg-btn" data-val="abajo" onclick="setAlimModal('modalAlim_llegada','abajo')">Por abajo</button>
+            </div>
+          </div>
+          <div id="modalAlim_abajo">
+            <div class="m1-card">
+              <div class="m1-card-label">Radio mínimo de curvatura</div>
+              <div class="m1-input-readonly" id="modalAlim_radio"></div>
+              <div id="modalAlim_aviso" style="display:none; margin-top:8px; font-size:12px; color:#f5b800;"></div>
+            </div>
+            <div class="m1-card">
+              <div class="m1-card-label">Sube por</div>
+              <div class="seg-ctrl" id="modalAlim_lado">
+                <button class="seg-btn" data-val="izq" onclick="setAlimModal('modalAlim_lado','izq')">Izquierda</button>
+                <button class="seg-btn" data-val="der" onclick="setAlimModal('modalAlim_lado','der')">Derecha</button>
+              </div>
+            </div>
+            <div class="m1-card">
+              <div class="m1-card-label">Los cables van</div>
+              <div class="seg-ctrl alim-seg3" id="modalAlim_haz">
+                <button class="seg-btn" data-val="juntos" onclick="setAlimModal('modalAlim_haz','juntos')">Juntos</button>
+                <button class="seg-btn" data-val="encima" onclick="setAlimModal('modalAlim_haz','encima')">Uno sobre otro</button>
+                <button class="seg-btn" data-val="sep" onclick="setAlimModal('modalAlim_haz','sep')">Separados</button>
+              </div>
+            </div>
+          </div>
+         </div>
+        </div>
+        <div class="m1-footer">
+          <span class="m1-error" id="modalIG_error"></span>
+          <button class="m1-cancel" onclick="cerrarModalIG()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalIG()">Guardar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalITM_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Insertar ITM</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="m1-card-label" style="margin:0; white-space:nowrap;">Rótulo</div>
+              <div class="m1-input-text" id="modalITM_rotulo" style="pointer-events:none; opacity:0.8; flex:0 0 auto; width:auto; min-width:80px; margin:0; line-height:28px; text-align:center;"></div>
+              <div id="modalITM_rotulo_edit" style="display:none; align-items:center; gap:4px;">
+                <span class="m1-rotulo-prefijo">C-</span>
+                <input type="number" inputmode="decimal" id="modalITM_rotulo_num" class="m1-input-text no-spinner" min="1" style="width:64px; min-width:0; margin:0; text-align:center;" onblur="_aplicarRotuloModalITM()" onkeydown="if (event.key === 'Enter') { event.preventDefault(); this.blur(); } else if (event.key === 'Escape') { event.preventDefault(); _cancelarRotuloModalITM(); }">
+              </div>
+              <button type="button" class="m1-rotulo-edit" id="modalITM_rotulo_btn" onclick="_editarRotuloModalITM()" title="Editar rótulo">✎</button>
+            </div>
+          </div>
+          <div class="m1-card" id="modalITM_card_ubicacion">
+            <div class="m1-card-label">Ubicación</div>
+            <div class="seg-ctrl" id="modalITM_ubicacion">
+              <button class="seg-btn activo" data-val="busbar" onclick="setITMUbicacion('busbar')">Panel Busbar</button>
+              <button class="seg-btn" data-val="libre" onclick="setITMUbicacion('libre')">Libre</button>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Tipo</div>
+            <select class="m1-input-text" id="modalITM_tipo" onchange="onITMTipoChange()" style="width:100%">
+              <option value="riel" selected="">ITM Riel</option>
+              <option value="cm_fijo">ITM CM Fijo</option>
+              <option value="cm_reg">ITM CM Reg</option>
+              <option value="reserva">Reserva</option>
+            </select>
+          </div>
+          <div class="m1-card" id="wrap_reserva_tamano" style="display:none;">
+            <div class="m1-card-label">Tamaño conector</div>
+            <select class="m1-input-text" id="modalITM_reserva_tamano" onchange="onITMTamanoChange()" style="width:100%">
+              <option value="riel" selected="">ITM Riel</option>
+              <option value="cm_fijo">ITM CM Fijo</option>
+              <option value="cm_reg">ITM CM Reg</option>
+            </select>
+          </div>
+          <div class="m1-card" style="display:flex;flex-wrap:wrap;gap:12px;">
+            <div style="flex:1;min-width:0;">
+              <div class="m1-card-label">Polos</div>
+              <select class="m1-input-text" id="modalITM_polos" onchange="onITMPolosChange()" style="width:100%"></select>
+            </div>
+            <div style="flex:1;min-width:0;" id="wrap_itm_capacidad">
+              <div class="m1-card-label">Capacidad</div>
+              <select class="m1-input-text" id="modalITM_capacidad" onchange="onITMCapacidadChange()" style="width:100%">
+                <option value="6">6A</option>
+                <option value="10">10A</option>
+                <option value="16" selected="">16A</option>
+                <option value="20">20A</option>
+                <option value="25">25A</option>
+                <option value="32">32A</option>
+                <option value="40">40A</option>
+                <option value="50">50A</option>
+                <option value="63">63A</option>
+              </select>
+            </div>
+            <div style="flex:0 0 96px;display:none;" id="wrap_itm_regulacion">
+              <div class="m1-card-label">Regulación</div>
+              <div class="m1-reg-wrap"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalITM_regulacion" min="1" step="1" oninput="this.dataset.auto='0'"><span>A</span></div>
+            </div>
+            <div class="m1-polos-nota" id="modalITM_polos_nota" style="display:none"></div>
+          </div>
+          
+          <div class="m1-card" id="modalITM_invertirN_wrap" style="display:none;">
+            <div style="display:flex;align-items:center;gap:18px;">
+              <label class="mgab-check">
+                <input type="checkbox" id="modalITM_invertirN" onchange="_actualizarPreviewInvertirN()">
+                <span style="font-size:12px;color:#aaa;white-space:nowrap;">Invertir N</span>
+              </label>
+              <div id="modalITM_invertirN_preview" style="display:flex;flex-direction:column;gap:2px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <span class="m1-error" id="modalITM_error"></span>
+          <button class="m1-cancel" onclick="cerrarModalITM()">Volver</button>
+          <button class="m1-guardar" id="modalITM_btnGuardar" onclick="confirmarModalITM()">Insertar</button>
+        </div>
+      </div>
+
+      
+      <div id="modalDIF_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Interruptor Diferencial</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Ubicación ID</div>
+            <div class="seg-ctrl" id="modalDIF_ubicacion">
+              <button class="seg-btn activo" data-val="lateral" onclick="setDIFUbicacion('lateral')">Lateral</button>
+              <button class="seg-btn" data-val="inferior" onclick="setDIFUbicacion('inferior')">Inferior</button>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="m1-card-label" style="margin:0; white-space:nowrap;">Rótulo</div>
+              <div class="m1-input-text" id="modalDIF_rotulo" style="pointer-events:none; opacity:0.8; flex:0 0 auto; width:auto; min-width:80px; margin:0; line-height:28px; text-align:center;"></div>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Tipo</div>
+            <select class="m1-input-text" id="modalDIF_tipo" onchange="onDIFTipoChange()" style="width:100%">
+              <option value="riel" selected="">DIF Riel</option>
+              <option value="reserva">Reserva</option>
+            </select>
+          </div>
+          <div class="m1-card" id="modalDIF_cardCapSens" style="display:flex;gap:12px;align-items:flex-end;">
+            <div style="flex:0 0 60px;">
+              <div class="m1-card-label">Polos</div>
+              <div class="m1-input-text" id="modalDIF_polos" style="pointer-events:none; opacity:0.8; text-align:center; line-height:28px;"></div>
+            </div>
+            <div style="flex:1 1 0; min-width:0;" id="wrap_dif_capacidad">
+              <div class="m1-card-label">Capacidad</div>
+              <select class="m1-input-text" id="modalDIF_corriente" style="width:100%">
+                <option value="25" selected="">25 A</option>
+                <option value="40">40 A</option>
+                <option value="63">63 A</option>
+              </select>
+            </div>
+            <div style="flex:1.4 1 0; min-width:0;" id="wrap_dif_sensibilidad">
+              <div class="m1-card-label">Sensibilidad</div>
+              <select class="m1-input-text" id="modalDIF_sensibilidad" style="width:100%">
+                <option value="30" selected="">30 mA</option>
+                <option value="100">100 mA</option>
+                <option value="300">300 mA</option>
+              </select>
+            </div>
+            <div style="flex:1 1 0; min-width:0; display:none;" id="wrap_dif_reserva_info">
+              <div class="m1-card-label">Tipo DIF</div>
+              <div class="m1-input-text" style="pointer-events:none; opacity:0.8; text-align:center; line-height:28px;">Reserva</div>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <span class="m1-error" id="modalDIF_error"></span>
+          <button class="m1-cancel" onclick="cerrarModalDIF()">Volver</button>
+          <button class="m1-guardar" id="modalDIF_btnGuardar" onclick="confirmarModalDIF()">Crear</button>
+        </div>
+      </div>
+
+      
+      <div id="modalEquipo_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Agregar Equipo</h2>
+        </div>
+        <div class="m1-body">
+          <button class="equipo-option equipo-activo" id="equipo_dif" onclick="seleccionarEquipo(this, 'dif')">
+            Interruptor Diferencial
+          </button>
+          <button class="equipo-option equipo-activo" id="equipo_dps" onclick="seleccionarEquipo(this, 'dps')">
+            DPS
+          </button>
+          <button class="equipo-option equipo-activo" id="equipo_contactor" onclick="seleccionarEquipo(this, 'contactor')">Contactor</button>
+          <button class="equipo-option equipo-activo" id="equipo_temporizador" onclick="seleccionarEquipo(this, 'timer')" style="display:none;">Timer</button>
+          <button class="equipo-option equipo-activo" id="equipo_pulsador" onclick="seleccionarEquipo(this, 'pulsador')" style="display:none;">Pulsador</button>
+          <button class="equipo-option equipo-activo" id="equipo_borneras" onclick="seleccionarEquipo(this, 'borneras')" style="display:none;">Borneras</button>
+          <button class="equipo-option equipo-activo" id="equipo_canaleta" onclick="seleccionarEquipo(this, 'canaleta')" style="display:none;">Canaleta</button>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalEquipo()">Volver</button>
+        </div>
+      </div>
+
+      
+      <div id="modalDPS_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">DPS</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Polos</div>
+            <select class="m1-input-text" id="modalDPS_polos" style="width:100%">
+              <option value="2">2P — 35 × 83 mm</option>
+              <option value="3">3P — 53 × 83 mm</option>
+              <option value="4">4P — 70.8 × 83 mm</option>
+            </select>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Características</div>
+            <div class="pdfm-grid">
+              <span>Tipo</span>
+              <select class="m1-input-text" id="modalDPS_tipo" onchange="_dpsMostrarCampos()">
+                <option value="T1">Tipo 1</option>
+                <option value="T1+T2">Tipo 1+2</option>
+                <option value="T2">Tipo 2</option>
+                <option value="T3">Tipo 3</option>
+              </select>
+              <span>Uc (tensión máx.)</span>
+              <select class="m1-input-text" id="modalDPS_uc">
+                <option value="275">275 V</option>
+                <option value="320">320 V</option>
+                <option value="385">385 V</option>
+                <option value="440">440 V</option>
+              </select>
+              <span data-dps="iimp">Iimp (10/350)</span>
+              <select class="m1-input-text" id="modalDPS_iimp" data-dps="iimp">
+                <option value="12.5">12.5 kA</option>
+                <option value="25">25 kA</option>
+              </select>
+              <span data-dps="imax">Imax (8/20)</span>
+              <select class="m1-input-text" id="modalDPS_imax" data-dps="imax">
+                <option value="20">20 kA</option>
+                <option value="40">40 kA</option>
+                <option value="65">65 kA</option>
+              </select>
+              <span>Up (nivel de protección)</span>
+              <select class="m1-input-text" id="modalDPS_up">
+                <option value="1.2">≤ 1.2 kV</option>
+                <option value="1.5">≤ 1.5 kV</option>
+                <option value="1.8">≤ 1.8 kV</option>
+                <option value="2.5">≤ 2.5 kV</option>
+              </select>
+              <span>Capacidad de cortocircuito</span>
+              <select class="m1-input-text" id="modalDPS_isc">
+                <option value="10">10 kA</option>
+                <option value="25">25 kA</option>
+                <option value="50">50 kA</option>
+              </select>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Ubicación</div>
+            <div class="seg-ctrl" id="modalDPS_ubicacion">
+              <button class="seg-btn activo" data-val="lateral" onclick="setDPSUbicacion('lateral')">Lateral</button>
+              <button class="seg-btn" data-val="libre" onclick="setDPSUbicacion('libre')">Libre</button>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="modalDPS_btnQuitar" onclick="quitarDPS()" style="color:#f87171; display:none;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalDPS()">Volver</button>
+          <button class="m1-guardar" id="modalDPS_btnConfirmar" onclick="confirmarModalDPS()">Crear</button>
+        </div>
+      </div>
+
+      
+      <div id="modalContactor_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Contactor</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Categoría de empleo</div>
+            <div class="seg-ctrl" id="modalContactor_categoria">
+              <button class="seg-btn activo" data-val="AC3" onclick="setContactorCategoria('AC3')">AC-3</button>
+              <button class="seg-btn" data-val="AC1" onclick="setContactorCategoria('AC1')">AC-1</button>
+            </div>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Capacidad</div>
+            <select class="m1-input-text" id="modalContactor_capacidad" style="width:100%"></select>
+          </div>
+          <div class="m1-card">
+            <div class="m1-card-label">Ubicación</div>
+            <div class="seg-ctrl" id="modalContactor_ubicacion">
+              <button class="seg-btn activo" data-val="lateral" onclick="setContactorUbicacion('lateral')">Lateral</button>
+              <button class="seg-btn" data-val="inferior" onclick="setContactorUbicacion('inferior')">Inferior</button>
+              <button class="seg-btn" data-val="libre" onclick="setContactorUbicacion('libre')">Libre</button>
+            </div>
+          </div>
+          <div class="m1-card">
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer;">
+              <input type="checkbox" id="modalContactor_reserva">
+              Mostrar como reserva
+            </label>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="modalContactor_btnQuitar" onclick="quitarContactor()" style="color:#f87171; display:none;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalContactor()">Volver</button>
+          <button class="m1-guardar" id="modalContactor_btnConfirmar" onclick="confirmarModalContactor()">Crear</button>
+        </div>
+      </div>
+
+      
+      <div id="modalTimer_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Timer</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#fff; cursor:pointer;">
+              <input type="checkbox" id="modalTimer_reserva">
+              Mostrar como reserva
+            </label>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalTimer()">Volver</button>
+          <button class="m1-guardar" id="modalTimer_btnConfirmar" onclick="confirmarModalTimer()">Crear</button>
+        </div>
+      </div>
+
+      
+      <div id="modalPulsador_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Pulsador</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Tipo</div>
+            <select class="m1-input-text" id="modalPulsador_tipo" style="width:100%" onchange="onPulsadorTipoChange()">
+              <option value="doble">Pulsador doble marcha/parada</option>
+              <option value="conjunto">Piloto + pulsador verde + pulsador rojo</option>
+              <option value="columnas">Piloto verde + marcha | Piloto rojo + parada</option>
+            </select>
+          </div>
+          <div class="m1-card">
+            
+            <div id="modalPulsador_desc_doble" style="margin-top:14px;">
+              <div style="display:flex; align-items:flex-end; gap:10px; margin-bottom:8px;">
+                <div style="width:56px; flex:0 0 56px;"></div>
+                <div style="flex:0 0 60px; line-height:0;">
+                  <img class="puls-bot-el" src="./ProTAB_files/Pulsador_doble_marcha_parada_piloto-vf.svg" style="width:60px; height:100px; display:block;">
+                </div>
+                <label style="font-size:12px; color:#bbb; display:flex; align-items:center;
+                              gap:6px; cursor:pointer;">
+                  <input type="checkbox" class="puls-bot-chk" onchange="onPulsadorBotoneraToggle(this)">
+                  <span>Pulsador doble marcha/parada</span>
+                </label>
+              </div>
+              <div id="modalPulsador_dobleRotuloRow" style="display:flex; align-items:center; gap:10px; margin-top:2px;">
+                <div style="width:56px; flex:0 0 56px;"></div>
+                <div id="modalPulsador_dobleRotulo" style="width:60px; height:30px; flex:0 0 60px; background:#000; color:#fff;
+                            display:flex; align-items:center; justify-content:center;
+                            font-family:Segoe UI, Arial, sans-serif; font-weight:700;
+                            font-size:11px; letter-spacing:0.5px;">K-XX</div>
+                <div style="font-size:12px; color:#bbb;">Rótulo del circuito</div>
+              </div>
+            </div>
+            
+            <div id="modalPulsador_desc_columnas" style="display:none;">
+              <div id="modalPulsador_columnasPreview" style="margin-top:14px;"></div>
+            </div>
+            
+            <div id="modalPulsador_selectorAddon" style="display:none;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <div style="width:56px; flex:0 0 56px;"></div>
+                <div style="flex:0 0 60px; line-height:0;">
+                  <img id="modalPulsador_selImg" src="./ProTAB_files/Selector-vf.svg" style="width:60px; height:60px; display:block; opacity:0.3;">
+                </div>
+                <label style="font-size:12px; color:#bbb; display:flex; align-items:center;
+                              gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="modalPulsador_selOn" onchange="onPulsadorSelectorToggle()">
+                  <span>Agregar selector 3 posiciones</span>
+                </label>
+              </div>
+              <div id="modalPulsador_selLeyendaRow" style="display:none; align-items:center; gap:10px; margin-bottom:8px;">
+                <div style="width:56px; flex:0 0 56px;"></div>
+                <div id="modalPulsador_selLeyendaPlaca" style="width:60px; height:30px; flex:0 0 60px; background:#000; color:#fff;
+                            display:flex; align-items:center; justify-content:center;
+                            font-family:Segoe UI, Arial, sans-serif; font-weight:700;
+                            font-size:11px; letter-spacing:0.5px;">1 - 0 - 2</div>
+                <select class="m1-input-text" id="modalPulsador_selLeyenda" style="flex:1 1 auto; min-width:0;" onchange="onPulsadorLeyendaChange()">
+                  <option value="1-0-2">1 - 0 - 2</option>
+                  <option value="M-0-A">M - 0 - A</option>
+                </select>
+              </div>
+            </div>
+            <div id="modalPulsador_desc_conjunto" style="display:none;">
+              
+              <div id="modalPulsador_conjuntoPreview" style="margin-top:14px;"></div>
+              <div id="modalPulsador_ledColorWrap" style="display:none; flex:1 1 auto; min-width:0;">
+                <div class="m1-card-label" style="margin-bottom:4px;">Color del piloto (LED)</div>
+                <select class="m1-input-text" id="modalPulsador_ledColor" style="width:100%" onchange="onPulsadorLedColorChange()">
+                  <option value="verde">Verde</option>
+                  <option value="rojo">Rojo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="modalPulsador_btnQuitar" onclick="quitarPulsador()" style="color:#f87171; display:none;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalPulsador()">Volver</button>
+          <button class="m1-guardar" id="modalPulsador_btnConfirmar" onclick="confirmarModalPulsador()">Aceptar</button>
+        </div>
+      </div>
+
+      
+      
+      <div id="modalCotasCM_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Cotas de Gabinete</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0">
+              <input type="checkbox" id="modalCM_comercial" style="margin:0;cursor:pointer">
+              <span class="m1-card-label" style="margin-bottom:0">Usar medidas comerciales</span>
+            </label>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="cerrarModalCotasCM()">Volver</button>
+          <button class="m1-guardar" onclick="confirmarModalCotasCM()">Aplicar cambios</button>
+        </div>
+      </div>
+
+      
+      <div id="modalCanaleta_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Canaleta</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div id="canaleta_bloque_sub" style="display:none; margin-bottom:10px; font-size:12px; font-weight:600; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:0.4px;"></div>
+            <div style="display:flex; gap:12px; align-items:flex-end;">
+              <div style="flex:1 1 0; min-width:0;">
+                <div class="m1-card-label">Ancho</div>
+                <select class="m1-input-text" id="canaleta_ancho" style="width:100%">
+                  <option value="25">25 mm</option><option value="30">30 mm</option><option value="40">40 mm</option><option value="50">50 mm</option><option value="60">60 mm</option><option value="70">70 mm</option><option value="80">80 mm</option>
+                </select>
+              </div>
+              <div style="flex:1 1 0; min-width:0;">
+                <div class="m1-card-label">Color</div>
+                <select class="m1-input-text" id="canaleta_color" style="width:100%">
+                  <option value="gris">Gris</option><option value="celeste">Celeste</option>
+                </select>
+              </div>
+            </div>
+            <div id="canaleta_ancho_nota" style="display:none; font-size:11px;
+                 color:#fbbf24; margin-top:6px; line-height:1.4"></div>
+            <div id="canaleta_bloque_wrap" style="display:none; margin-top:12px;">
+              <div class="m1-card-label">Canaleta</div>
+              <select class="m1-input-text" id="canaleta_bloque_sel" style="width:100%" onchange="_canaletaBloqueCambiarSel()"></select>
+            </div>
+            <div class="m1-card-label canaleta-miembro" style="margin-top:12px;">Lados y separación a los equipos</div>
+            <div class="canaleta-miembro" style="display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:auto auto auto; grid-template-areas:'. arriba .' 'izq tira der' '. abajo .'; gap:6px 10px; align-items:center; justify-items:center;">
+              <div style="grid-area:arriba; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.85);cursor:pointer"><input type="checkbox" id="canaleta_lado_arriba" style="margin:0;cursor:pointer">Arriba</label>
+                <div style="display:flex;align-items:center;gap:4px"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="canaleta_sep_arriba" value="10" min="0" max="200" step="1" style="width:64px;text-align:right" title="Separación a los equipos por este lado (mm)"><span style="color:rgba(255,255,255,0.45);font-size:11px">mm</span></div>
+              </div>
+              <div style="grid-area:izq; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.85);cursor:pointer"><input type="checkbox" id="canaleta_lado_izq" style="margin:0;cursor:pointer">Izquierda</label>
+                <div style="display:flex;align-items:center;gap:4px"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="canaleta_sep_izq" value="10" min="0" max="200" step="1" style="width:64px;text-align:right" title="Separación a los equipos por este lado (mm)"><span style="color:rgba(255,255,255,0.45);font-size:11px">mm</span></div>
+              </div>
+              <div id="canaleta_tira_box" style="grid-area:tira; width:72px; height:44px; border:1px dashed rgba(255,255,255,0.35); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:10px; letter-spacing:0.5px; color:rgba(255,255,255,0.5)">EQUIPOS</div>
+              <div style="grid-area:der; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.85);cursor:pointer"><input type="checkbox" id="canaleta_lado_der" style="margin:0;cursor:pointer">Derecha</label>
+                <div style="display:flex;align-items:center;gap:4px"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="canaleta_sep_der" value="10" min="0" max="200" step="1" style="width:64px;text-align:right" title="Separación a los equipos por este lado (mm)"><span style="color:rgba(255,255,255,0.45);font-size:11px">mm</span></div>
+              </div>
+              <div style="grid-area:abajo; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.85);cursor:pointer"><input type="checkbox" id="canaleta_lado_abajo" style="margin:0;cursor:pointer">Abajo</label>
+                <div style="display:flex;align-items:center;gap:4px"><input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="canaleta_sep_abajo" value="10" min="0" max="200" step="1" style="width:64px;text-align:right" title="Separación a los equipos por este lado (mm)"><span style="color:rgba(255,255,255,0.45);font-size:11px">mm</span></div>
+              </div>
+            </div>
+            
+            <div id="canaleta_col_otro_wrap" style="display:none; margin-top:10px;">
+              <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.85);cursor:pointer">
+                <input type="checkbox" id="canaleta_col_otro" style="margin:0;cursor:pointer">
+                <span id="canaleta_col_otro_lbl">También en el lado derecho del panel busbar</span>
+              </label>
+            </div>
+            <div class="canaleta-miembro" style="display:flex; gap:12px; align-items:flex-end; margin-top:12px;">
+              <div style="flex:1 1 0; min-width:0;">
+                <div class="m1-card-label">Sobrante por punta</div>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="canaleta_sobrante" value="20" min="0" max="200" step="1" style="width:100%">
+              </div>
+            </div>
+          </div>
+          <div class="m1-card" id="canaleta_card_lista">
+            <div class="m1-card-label">Equipos dentro</div>
+            <div id="canaleta_lista" style="font-size:12px"></div>
+          </div>
+          <div class="m1-card" id="canaleta_card_fusion" style="display:none">
+            <div class="m1-card-label">Fusión</div>
+            
+            <div id="canaleta_fusion_tiras" style="font-size:12px"></div>
+            <div id="canaleta_fusion_col_wrap" style="display:none; margin-top:6px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.85)">
+                <input type="checkbox" id="canaleta_fusion_col" style="margin:0;cursor:pointer">
+                <span id="canaleta_fusion_col_lbl">Fusionar con las canaletas de columna</span>
+              </label>
+            </div>
+            <div id="canaleta_fusion_wrap" style="display:none; margin-top:6px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.85)">
+                <input type="checkbox" id="canaleta_fusion" style="margin:0;cursor:pointer">
+                <span id="canaleta_fusion_lbl">Fusionar con la canaleta de arriba</span>
+              </label>
+            </div>
+            <div id="canaleta_fusion_lista" style="font-size:12px"></div>
+            <div id="canaleta_fusion_dom_wrap" style="display:none; margin-top:8px;">
+              <div class="m1-card-label">Dominante</div>
+              <select class="m1-input-text" id="canaleta_fusion_dom" style="width:100%"></select>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" id="canaleta_btnQuitar" onclick="quitarCanaleta()" style="color:#f87171;">Retirar</button>
+          <button class="m1-cancel" onclick="cerrarModalCanaleta()">Volver</button>
+          <button class="m1-guardar" id="canaleta_btnConfirmar" onclick="confirmarModalCanaleta()">Crear</button>
+        </div>
+      </div>
+
+      <div id="modalIrPuerta_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Vista de Puerta</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div style="padding:6px 0 12px; font-size:13px; color:#dfe4f5; line-height:1.5;">
+              ¿Querés revisar la inserción en <strong>Vista de Puerta</strong>?
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="modalIrPuerta_noPreguntar" style="width:15px; height:15px; accent-color:#5b7cfa; cursor:pointer;">
+              <label for="modalIrPuerta_noPreguntar" style="font-size:12px; color:#ccc; cursor:pointer;">No volver a preguntar</label>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <button class="m1-cancel" onclick="respuestaIrPuerta(false)">Quedarme acá</button>
+          <button class="m1-guardar" onclick="respuestaIrPuerta(true)">Ir a la puerta</button>
+        </div>
+      </div>
+
+      
+      <div id="modalPB_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Panel Busbar</h2>
+        </div>
+        <div class="m1-body">
+          <div class="m1-card">
+            <div class="m1-card-label">Tipo de sistema</div>
+            <div style="align-items:flex-start; display:grid; grid-template-columns:1.3fr 1.3fr 0.6fr; gap:12px;">
+              <div style="min-width:0;">
+                <div class="m1-sub-label">Fases</div>
+                <select class="m1-input-text" id="modalPB_fases" onchange="onFasesChange()" style="width:100%; min-width:0;">
+                  <option value="" disabled="" selected="">— Fase —</option>
+                  <option value="3F">3F</option>
+                  <option value="3F+N">3F+N</option>
+                  <option value="2F">2F</option>
+                  <option value="1F+N">1F+N</option>
+                </select>
+              </div>
+              <div id="modalPB_subfases" style="min-width:0;">
+                <div class="m1-sub-label">Orden</div>
+                <select class="m1-input-text" id="modalPB_subfases_sel" style="width:100%; min-width:0;" onchange="onSubfasesChange()"></select>
+                <div id="modalPB_invertirN_wrap" style="display:none; margin-top:6px;">
+                  <label class="mgab-check">
+                    <input type="checkbox" id="modalPB_invertirN" onchange="onInvertirNChange()">
+                    <span style="font-size:12px; color:#aaa; white-space:nowrap;">Invertir N</span>
+                  </label>
+                </div>
+              </div>
+              <div style="min-width:0;">
+                <div class="m1-sub-label">N° Polos</div>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalPB_polos" placeholder="--" min="2" max="60" step="2" style="width:100%; min-width:0; text-align:center; box-sizing:border-box;">
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="m1-card" id="modalPB_sec_aisladores" style="display:none">
+            <div class="m1-card-label">Aisladores</div>
+            <select class="m1-input-text" id="modalPB_ais_sel" onchange="onAisladoTipoChange(this.value)">
+              <option value="base_4F" style="display:none">Aislador base 4F</option>
+              <option value="base_3F">Aislador base 3F</option>
+              <option value="0.5s400_4F" style="display:none">Aislador 0.5/400 (x4)</option>
+              <option value="0.5s400_3F">Aislador 0.5/400</option>
+            </select>
+          </div>
+
+          <div class="m1-card" id="modalPB_card_barraTierra">
+            <div class="m1-sub-label">Barra de Tierra (PE)</div>
+            <select class="m1-input-text" id="modalPB_barraTierra" onchange="_pbTierraChasisVisible()">
+              <option value="pe" selected="">Con Barra PE</option>
+              <option value="pe+ais">Con Barra PE + Barra PE Aislada</option>
+              <option value="ais">Con Barra PE Aislada</option>
+              <option value="ninguno">Ninguno</option>
+            </select>
+            <div id="modalPB_tierraChasis_wrap" style="display:none; margin-top:6px;">
+              <label class="mgab-check">
+                <input type="checkbox" id="modalPB_tierraChasis" checked="">
+                <span style="font-size:12px; color:#aaa; white-space:nowrap;">Conectar a chasis del tablero</span>
+              </label>
+            </div>
+            <div id="modalPB_barraN_wrap" style="display:none;">
+              <div class="m1-sub-label" style="margin-top:10px;">Barra de Neutro (N)</div>
+              <select class="m1-input-text" id="modalPB_barraN">
+                <option value="con" selected="">Con Barra N</option>
+                <option value="ninguno">Ninguno</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="m1-card" id="modalPB_card_parametros">
+            <div class="m1-card-label">Parámetros de distribución</div>
+            <div style="margin-top:0; padding-bottom:10px;">
+              <label class="mgab-check" style="color:rgba(255,255,255,0.65);">
+                <input type="checkbox" id="modalPB_conexionIG" onchange="onConexionIGToggle(this.checked)">
+                <span style="font-size:12px;white-space:nowrap">Extensión superior</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <span class="m1-error" id="modalPB_error"></span>
+          <button class="m1-cancel" onclick="cerrarModalPB()">Volver</button>
+          <button class="m1-guardar" id="modalPB_btnConfirmar" onclick="confirmarModalPB()">Crear</button>
+        </div>
+      </div>
+
+      
+      <div id="modalGab_overlay" class="sp-modal">
+        <div class="m1-header">
+          <h2 class="modal-titulo">Gabinete</h2>
+        </div>
+        <div class="m1-body">
+          
+          <div class="m1-card" id="modalGab_card_tipo">
+            <div class="m1-card-label">Tipo de fijación</div>
+            <select id="modalGab_tipo" class="m1-input-text" onchange="setGabTipo(this.value)">
+              <option value="" disabled="" selected="">— Seleccionar —</option>
+              <option value="adosado">Adosado</option>
+              <option value="empotrado">Empotrado</option>
+            </select>
+          </div>
+          
+          <div class="m1-card" id="modalGab_card_ip">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div class="m1-card-label" style="margin-bottom:0">Grado de protección IP</div>
+              <input type="text" class="m1-input-text" id="modalGab_ip" maxlength="2" placeholder="--" style="width:52px;min-width:0;text-align:center;flex:none;letter-spacing:2px">
+            </div>
+          </div>
+          
+          <div class="m1-card m1-colapsable colapsado" id="modalGab_card_caract">
+            <div class="m1-card-label m1-colapsable-head" onclick="toggleCardColapsable('modalGab_card_caract')">
+              Características constructivas <span class="m1-chevron">▾</span>
+            </div>
+            <div class="m1-colapsable-body">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <select id="mgab_panel_select" class="m1-input-text" style="flex:1;min-width:0" onchange="switchMgabTab(this.value)" disabled="">
+                <option value="todos">Todos</option>
+                <option value="cuerpo">Cuerpo</option>
+                <option value="puerta">Puerta</option>
+                <option value="placa">Placa base</option>
+                <option value="mandil">Mandil</option>
+              </select>
+              <label class="mgab-check" style="flex-shrink:0">
+                <input type="checkbox" id="modalGab_selIndependiente" onchange="onSelIndependienteChange(this.checked)">
+                <span style="font-size:12px;color:#aaa;white-space:nowrap">Selección independiente</span>
+              </label>
+            </div>
+
+            
+            <div id="mgab_panel_cuerpo">
+              <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                <span style="font-size:12px;color:#aaa;flex:1">Tipo de material</span>
+                <span style="font-size:12px;color:#aaa;width:68px;text-align:left;flex-shrink:0;white-space:nowrap">Espesor (mm)</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                <select id="modalGab_plancha" class="m1-input-text" style="flex:1;min-width:0">
+                  <option value="laf">LAF (lámina al frío)</option>
+                  <option value="lac">LAC (lámina al caliente)</option>
+                  <option value="inox">Acero inoxidable</option>
+                  <option value="galv">Acero galvanizado</option>
+                </select>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_espesor" value="1.5" step="0.1" style="width:68px;min-width:0;text-align:center;flex:none">
+              </div>
+              <div style="margin-top:4px;margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                  <span style="font-size:12px;color:#aaa;flex:1;min-width:0">Acabado</span>
+                  <span id="espesor_lbl_cuerpo" style="font-size:12px;color:#aaa;width:68px;flex-shrink:0;white-space:nowrap">Espesor (μm)</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+                  <select id="modalGab_acabado" class="m1-input-text" style="flex:1;min-width:0" onchange="onAcabadoChange('cuerpo',this.value)">
+                    <option value="pintura">Pintura electroestática</option>
+                    <option value="galvanizado">Galvanizado</option>
+                    <option value="ninguno">Ninguno</option>
+                  </select>
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje" value="100" style="width:68px;min-width:0;text-align:center;flex:none">
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_galv" value="100" style="width:68px;min-width:0;text-align:center;flex:none;display:none">
+                </div>
+                <div id="ralcolor_row_cuerpo">
+                  <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                    <span id="ral_lbl_cuerpo" style="font-size:12px;color:#aaa;width:62px;flex-shrink:0">RAL</span>
+                    <span id="color_lbl_cuerpo" style="font-size:12px;color:#aaa;flex:1">Color</span>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" class="m1-input-text" id="modalGab_ral" value="7035" style="width:62px;min-width:0;text-align:center;flex:none">
+                    <div id="colorGab_wrap" style="position:relative;flex:none">
+                      <div id="colorGab_btn" onclick="toggleColorGabDrop(event)" class="color-btn">
+                        <div id="colorGab_preview" class="color-preview" style="background:#D7D7D7"></div>
+                        <span style="font-size:9px;color:#aaa">▼</span>
+                      </div>
+                      <div id="colorGab_drop" class="color-drop" style="display: none;">
+                        <div onclick="selectColorGab('#D7D7D7')" data-color="#D7D7D7" class="color-swatch" style="background:#D7D7D7;border-color:#00bfff"></div>
+                        <div onclick="selectColorGab('#F75E25')" data-color="#F75E25" class="color-swatch" style="background:#F75E25"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:6px;margin-bottom:4px">
+                <label class="mgab-check" style="flex-shrink:0">
+                  <input type="checkbox" id="modalGab_prepSup_check" onchange="onPrepSupToggle('cuerpo',this.checked)">
+                  <span style="font-size:12px;color:#aaa;white-space:nowrap">Preparación de superficie</span>
+                </label>
+                <select id="modalGab_prepSup" class="m1-input-text" style="flex:1;min-width:0;opacity:0.4;pointer-events:none" onchange="onPrepSupChange('cuerpo',this.value)">
+                  <option value="quimico">Químico</option>
+                  <option value="arenado">Arenado</option>
+                  <option value="granallado">Granallado</option>
+                </select>
+              </div>
+              <div id="prepSup_cuerpo_quimico" style="display:none;flex-direction:column;gap:6px;padding-left:4px">
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desengrasado"> Desengrasado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desoxidado"> Desoxidado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_fosfatizado"> Fosfatizado</label>
+              </div>
+            </div>
+
+            
+            <div id="mgab_panel_puerta" style="display:none">
+              <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                <span style="font-size:12px;color:#aaa;flex:1">Tipo de material</span>
+                <span style="font-size:12px;color:#aaa;width:68px;text-align:left;flex-shrink:0;white-space:nowrap">Espesor (mm)</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                <select id="modalGab_plancha_puerta" class="m1-input-text" style="flex:1;min-width:0">
+                  <option value="laf">LAF (lámina al frío)</option>
+                  <option value="lac">LAC (lámina al caliente)</option>
+                  <option value="inox">Acero inoxidable</option>
+                  <option value="galv">Acero galvanizado</option>
+                </select>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_espesor_puerta" value="1.5" step="0.1" style="width:68px;min-width:0;text-align:center;flex:none">
+              </div>
+              <div style="margin-top:4px;margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                  <span style="font-size:12px;color:#aaa;flex:1;min-width:0">Acabado</span>
+                  <span id="espesor_lbl_puerta" style="font-size:12px;color:#aaa;width:68px;flex-shrink:0;white-space:nowrap">Espesor (μm)</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+                  <select id="modalGab_acabado_puerta" class="m1-input-text" style="flex:1;min-width:0" onchange="onAcabadoChange('puerta',this.value)">
+                    <option value="pintura">Pintura electroestática</option>
+                    <option value="galvanizado">Galvanizado</option>
+                    <option value="ninguno">Ninguno</option>
+                  </select>
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_puerta" value="100" style="width:68px;min-width:0;text-align:center;flex:none">
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_galv_puerta" value="100" style="width:68px;min-width:0;text-align:center;flex:none;display:none">
+                </div>
+                <div id="ralcolor_row_puerta">
+                  <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                    <span style="font-size:12px;color:#aaa;width:62px;flex-shrink:0">RAL</span>
+                    <span style="font-size:12px;color:#aaa;flex:1">Color</span>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" class="m1-input-text" id="modalGab_ral_puerta" value="7035" style="width:62px;min-width:0;text-align:center;flex:none">
+                    <div style="position:relative;flex:none">
+                      <div id="colorPuerta_btn" onclick="toggleColorPuertaDrop(event)" class="color-btn">
+                        <div id="colorPuerta_preview" class="color-preview" style="background:#D7D7D7"></div>
+                        <span style="font-size:9px;color:#aaa">▼</span>
+                      </div>
+                      <div id="colorPuerta_drop" class="color-drop" style="display: none;">
+                        <div onclick="selectColorPuerta('#D7D7D7')" data-color="#D7D7D7" class="color-swatch" style="background:#D7D7D7;border-color:#00bfff"></div>
+                        <div onclick="selectColorPuerta('#F75E25')" data-color="#F75E25" class="color-swatch" style="background:#F75E25"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:6px;margin-bottom:4px">
+                <label class="mgab-check" style="flex-shrink:0">
+                  <input type="checkbox" id="modalGab_prepSup_check_puerta" onchange="onPrepSupToggle('puerta',this.checked)">
+                  <span style="font-size:12px;color:#aaa;white-space:nowrap">Preparación de superficie</span>
+                </label>
+                <select id="modalGab_prepSup_puerta" class="m1-input-text" style="flex:1;min-width:0;opacity:0.4;pointer-events:none" onchange="onPrepSupChange('puerta',this.value)">
+                  <option value="quimico">Químico</option>
+                  <option value="arenado">Arenado</option>
+                  <option value="granallado">Granallado</option>
+                </select>
+              </div>
+              <div id="prepSup_puerta_quimico" style="display:none;flex-direction:column;gap:6px;padding-left:4px">
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desengrasado_puerta"> Desengrasado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desoxidado_puerta"> Desoxidado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_fosfatizado_puerta"> Fosfatizado</label>
+              </div>
+            </div>
+
+            
+            <div id="mgab_panel_placa" style="display:none">
+              <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                <span style="font-size:12px;color:#aaa;flex:1">Tipo de material</span>
+                <span style="font-size:12px;color:#aaa;width:68px;text-align:left;flex-shrink:0;white-space:nowrap">Espesor (mm)</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                <select id="modalGab_plancha_placa" class="m1-input-text" style="flex:1;min-width:0">
+                  <option value="laf">LAF (lámina al frío)</option>
+                  <option value="lac">LAC (lámina al caliente)</option>
+                  <option value="inox">Acero inoxidable</option>
+                  <option value="galv">Acero galvanizado</option>
+                </select>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_espesor_placa" value="1.5" step="0.1" style="width:68px;min-width:0;text-align:center;flex:none">
+              </div>
+              <div style="margin-top:4px;margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                  <span style="font-size:12px;color:#aaa;flex:1;min-width:0">Acabado</span>
+                  <span id="espesor_lbl_placa" style="font-size:12px;color:#aaa;width:68px;flex-shrink:0;white-space:nowrap">Espesor (μm)</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+                  <select id="modalGab_acabado_placa" class="m1-input-text" style="flex:1;min-width:0" onchange="onAcabadoChange('placa',this.value)">
+                    <option value="pintura">Pintura electroestática</option>
+                    <option value="galvanizado">Galvanizado</option>
+                    <option value="ninguno">Ninguno</option>
+                  </select>
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_placa" value="100" style="width:68px;min-width:0;text-align:center;flex:none">
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_galv_placa" value="100" style="width:68px;min-width:0;text-align:center;flex:none;display:none">
+                </div>
+                <div id="ralcolor_row_placa">
+                  <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                    <span style="font-size:12px;color:#aaa;width:62px;flex-shrink:0">RAL</span>
+                    <span style="font-size:12px;color:#aaa;flex:1">Color</span>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" class="m1-input-text" id="modalGab_ral_placa" value="7035" style="width:62px;min-width:0;text-align:center;flex:none">
+                    <div style="position:relative;flex:none">
+                      <div id="colorPlaca_btn" onclick="toggleColorPlacaDrop(event)" class="color-btn">
+                        <div id="colorPlaca_preview" class="color-preview" style="background:#F75E25"></div>
+                        <span style="font-size:9px;color:#aaa">▼</span>
+                      </div>
+                      <div id="colorPlaca_drop" class="color-drop" style="display: none;">
+                        <div onclick="selectColorPlaca('#D7D7D7')" data-color="#D7D7D7" class="color-swatch" style="background:#D7D7D7"></div>
+                        <div onclick="selectColorPlaca('#F75E25')" data-color="#F75E25" class="color-swatch" style="background:#F75E25;border-color:#00bfff"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:6px;margin-bottom:4px">
+                <label class="mgab-check" style="flex-shrink:0">
+                  <input type="checkbox" id="modalGab_prepSup_check_placa" onchange="onPrepSupToggle('placa',this.checked)">
+                  <span style="font-size:12px;color:#aaa;white-space:nowrap">Preparación de superficie</span>
+                </label>
+                <select id="modalGab_prepSup_placa" class="m1-input-text" style="flex:1;min-width:0;opacity:0.4;pointer-events:none" onchange="onPrepSupChange('placa',this.value)">
+                  <option value="quimico">Químico</option>
+                  <option value="arenado">Arenado</option>
+                  <option value="granallado">Granallado</option>
+                </select>
+              </div>
+              <div id="prepSup_placa_quimico" style="display:none;flex-direction:column;gap:6px;padding-left:4px">
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desengrasado_placa"> Desengrasado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desoxidado_placa"> Desoxidado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_fosfatizado_placa"> Fosfatizado</label>
+              </div>
+            </div>
+
+            
+            <div id="mgab_panel_mandil" style="display:none">
+              <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                <span style="font-size:12px;color:#aaa;flex:1">Tipo de material</span>
+                <span style="font-size:12px;color:#aaa;width:68px;text-align:left;flex-shrink:0;white-space:nowrap">Espesor (mm)</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                <select id="modalGab_plancha_mandil" class="m1-input-text" style="flex:1;min-width:0">
+                  <option value="laf">LAF (lámina al frío)</option>
+                  <option value="lac">LAC (lámina al caliente)</option>
+                  <option value="inox">Acero inoxidable</option>
+                  <option value="galv">Acero galvanizado</option>
+                </select>
+                <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_espesor_mandil" value="1.5" step="0.1" style="width:68px;min-width:0;text-align:center;flex:none">
+              </div>
+              <div style="margin-top:4px;margin-bottom:8px">
+                <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                  <span style="font-size:12px;color:#aaa;flex:1;min-width:0">Acabado</span>
+                  <span id="espesor_lbl_mandil" style="font-size:12px;color:#aaa;width:68px;flex-shrink:0;white-space:nowrap">Espesor (μm)</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+                  <select id="modalGab_acabado_mandil" class="m1-input-text" style="flex:1;min-width:0" onchange="onAcabadoChange('mandil',this.value)">
+                    <option value="pintura">Pintura electroestática</option>
+                    <option value="galvanizado">Galvanizado</option>
+                    <option value="ninguno">Ninguno</option>
+                  </select>
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_mandil" value="100" style="width:68px;min-width:0;text-align:center;flex:none">
+                  <input type="number" inputmode="decimal" class="m1-input-text no-spinner" id="modalGab_micraje_galv_mandil" value="100" style="width:68px;min-width:0;text-align:center;flex:none;display:none">
+                </div>
+                <div id="ralcolor_row_mandil">
+                  <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:4px">
+                    <span style="font-size:12px;color:#aaa;width:62px;flex-shrink:0">RAL</span>
+                    <span style="font-size:12px;color:#aaa;flex:1">Color</span>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" class="m1-input-text" id="modalGab_ral_mandil" value="7035" style="width:62px;min-width:0;text-align:center;flex:none">
+                    <div style="position:relative;flex:none">
+                      <div id="colorMandil_btn" onclick="toggleColorMandilDrop(event)" class="color-btn">
+                        <div id="colorMandil_preview" class="color-preview" style="background:#D7D7D7"></div>
+                        <span style="font-size:9px;color:#aaa">▼</span>
+                      </div>
+                      <div id="colorMandil_drop" class="color-drop" style="display: none;">
+                        <div onclick="selectColorMandil('#D7D7D7')" data-color="#D7D7D7" class="color-swatch" style="background:#D7D7D7;border-color:#00bfff"></div>
+                        <div onclick="selectColorMandil('#F75E25')" data-color="#F75E25" class="color-swatch" style="background:#F75E25"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:6px;margin-bottom:4px">
+                <label class="mgab-check" style="flex-shrink:0">
+                  <input type="checkbox" id="modalGab_prepSup_check_mandil" onchange="onPrepSupToggle('mandil',this.checked)">
+                  <span style="font-size:12px;color:#aaa;white-space:nowrap">Preparación de superficie</span>
+                </label>
+                <select id="modalGab_prepSup_mandil" class="m1-input-text" style="flex:1;min-width:0;opacity:0.4;pointer-events:none" onchange="onPrepSupChange('mandil',this.value)">
+                  <option value="quimico">Químico</option>
+                  <option value="arenado">Arenado</option>
+                  <option value="granallado">Granallado</option>
+                </select>
+              </div>
+              <div id="prepSup_mandil_quimico" style="display:none;flex-direction:column;gap:6px;padding-left:4px">
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desengrasado_mandil"> Desengrasado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_desoxidado_mandil"> Desoxidado</label>
+                <label class="mgab-check"><input type="checkbox" id="modalGab_fosfatizado_mandil"> Fosfatizado</label>
+              </div>
+            </div>
+          </div>
+            </div>
+
+          
+          <div class="m1-card m1-colapsable colapsado" id="modalGab_card_cerradura">
+            <div class="m1-card-label m1-colapsable-head" onclick="toggleCardColapsable('modalGab_card_cerradura')">
+              Cerradura <span class="m1-chevron">▾</span>
+            </div>
+            <div class="m1-colapsable-body">
+            <div id="modalGab_cerr_mandil_row">
+              <div style="display:grid; grid-template-columns:1fr 70px; column-gap:8px; margin-bottom:4px;">
+                <div style="color:#aaa; font-size:12px;">Cerradura en mandil</div>
+                <div style="color:#aaa; font-size:12px;">Cantidad</div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 70px; column-gap:8px; align-items:center;">
+                <select id="modalGab_cerr_mandil_modelo" class="m1-input-text">
+                  <option value="MS-406">MS-406 (Chapa Manija)</option>
+                </select>
+                <select id="modalGab_cerr_mandil_cantidad" class="m1-input-text">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+            </div>
+            <div id="modalGab_cerr_puerta_row" style="margin-top:8px;">
+              <div style="display:grid; grid-template-columns:1fr 70px; column-gap:8px; margin-bottom:4px;">
+                <div style="color:#aaa; font-size:12px;">Cerradura en puerta</div>
+                <div style="color:#aaa; font-size:12px;">Cantidad</div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 70px; column-gap:8px; align-items:center;">
+                <select id="modalGab_cerr_puerta_modelo" class="m1-input-text" onchange="_marcarChapaPuertaManual()">
+                  <option value="MS-705">MS-705 (Chapa Circular)</option>
+                  <option value="MS603-3">MS603-3 (Chapa Push)</option>
+                </select>
+                <select id="modalGab_cerr_puerta_cantidad" class="m1-input-text">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          
+          <div class="m1-card m1-colapsable colapsado" id="modalGab_card_senaletica">
+            <div class="m1-card-label m1-colapsable-head" onclick="toggleCardColapsable('modalGab_card_senaletica')">
+              Señalética <span class="m1-chevron">▾</span>
+            </div>
+            <div class="m1-colapsable-body">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:#aaa; font-size:12px; width:110px; flex-shrink:0;">Tamaño (alto × ancho)</span>
+                <select id="modalGab_senaletica_tamano" class="m1-input-text" style="flex:1; min-width:0;">
+                  <option value="300x200">30 × 20 cm</option>
+                  <option value="150x100">15 × 10 cm</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="m1-footer">
+          <span class="m1-error" id="modalGab_error"></span>
+          <button class="m1-cancel" onclick="cerrarModalGab()">Volver</button>
+          <button class="m1-guardar" id="modalGab_btnConfirmar" onclick="confirmarModalGab()">Crear</button>
+        </div>
+      </div>
+
+    </aside>
+  <div class="vista-flotante" id="vista_flotante" onclick="toggleVistaDropdown(event)" title="Vista del tablero">
+      <span class="vista-flotante-label">Vista</span>
+      <span class="vista-flotante-valor" id="vista_valor">Vista Frontal (sin puerta)</span>
+      
+      <select id="sel_vista" style="display:none" onchange="onVistaChange(this.value)">
+        <option value="frontal" selected="">Vista Frontal (sin puerta)</option>
+        <option value="frontal_mandil">Vista Frontal (con mandil)</option>
+        <option value="frontal_puerta">Vista Frontal (con puerta)</option>
+        <option value="lateral">Vista Lateral</option>
+      </select>
+      <div class="vista-popover" id="vista_popover" style="display:none">
+        <div class="vista-popover-item activo" data-v="frontal" onclick="seleccionarVista(event, 'frontal')">Vista Frontal (sin puerta)</div>
+        <div class="vista-popover-item" data-v="frontal_mandil" onclick="seleccionarVista(event, 'frontal_mandil')">Vista Frontal (con mandil)</div>
+        <div class="vista-popover-item" data-v="frontal_puerta" onclick="seleccionarVista(event, 'frontal_puerta')">Vista Frontal (con puerta)</div>
+        <div class="vista-popover-item" data-v="lateral" onclick="seleccionarVista(event, 'lateral')">Vista Lateral</div>
+      </div>
+    </div><div class="zoom-pill zoom-pill-flotante">
+      <button class="zoom-btn" onclick="zoomAjustar(-0.05)" title="Alejar">−</button>
+      <span id="zoom_indicator" class="zoom-val">100%</span>
+      <button class="zoom-btn" onclick="zoomAjustar(0.05)" title="Acercar">+</button>
+      <button class="zoom-btn zoom-fit" onclick="zoomAjustar(0)" title="Ajustar a pantalla">⛶</button>
+    </div></div>
+
+  </div>
+
+  <script src="./ProTAB_files/safari-zoom.js"></script>
+  <script src="./ProTAB_files/diag-web.js"></script>
+  <script src="./ProTAB_files/core.js"></script>
+  <script src="./ProTAB_files/columna.js"></script>
+  <script src="./ProTAB_files/rules-client.js"></script>
+  <script src="./ProTAB_files/canvas.js"></script>
+  <script src="./ProTAB_files/gabinete.js"></script>
+  <script src="./ProTAB_files/panel-busbar.js"></script>
+  <script src="./ProTAB_files/ig.js"></script>
+  <script src="./ProTAB_files/itm.js"></script>
+  <script src="./ProTAB_files/dif.js"></script>
+  <script src="./ProTAB_files/barras.js"></script>
+  <script src="./ProTAB_files/canaletas.js"></script>
+  <script src="./ProTAB_files/borneras.js"></script>
+  <script src="./ProTAB_files/cotas.js"></script>
+  <script src="./ProTAB_files/vistas.js"></script>
+  <script src="./ProTAB_files/mandil.js"></script>
+  <script src="./ProTAB_files/biblioteca.js"></script>
+  <script src="./ProTAB_files/metrado.js"></script>
+  
+  <script src="./ProTAB_files/malla-util.js"></script>
+  <script src="./ProTAB_files/conector-s-malla.js"></script>
+  <script src="./ProTAB_files/conector-rt-malla.js"></script>
+  <script src="./ProTAB_files/conector-c1-malla.js"></script>
+  <script src="./ProTAB_files/c1-al-ig.js"></script>
+  <script src="./ProTAB_files/barra-pe-malla.js"></script>
+  <script src="./ProTAB_files/desplegado-svg.js"></script>
+  <script src="./ProTAB_files/laminas-cobre.js"></script>
+  <script src="./ProTAB_files/hoja-protab.js"></script>
+  <script src="./ProTAB_files/fabricacion.js"></script>
+  <script src="./ProTAB_files/pdf.js"></script>
+  <script src="./ProTAB_files/dashboard.js"></script>
+  <script src="./ProTAB_files/conector3d.js"></script>
+  <script src="./ProTAB_files/dbg.js"></script>
+  <script src="./ProTAB_files/unifilar-lib.js"></script>
+  <script src="./ProTAB_files/dxf.js"></script>
+  <script src="./ProTAB_files/xlsx.js"></script>
+  <script src="./ProTAB_files/unifilar.js"></script>
+  <script src="./ProTAB_files/unifilar-cable.js"></script>
+  <script src="./ProTAB_files/alimentador.js"></script>
+  <script src="./ProTAB_files/unifilar-editor.js"></script>
+  <script src="./ProTAB_files/control.js"></script>
+  <script src="./ProTAB_files/dxf-tablero.js"></script>
+  
+  <div id="con3d_overlay">
+    <iframe id="con3d_frame" title="Conector de Riel en 3D" src="./ProTAB_files/saved_resource.html"></iframe>
+    <div id="con3d_cargando"><div class="v3d-spinner"></div><div>Preparando el modelo 3D</div></div>
+    <div class="uni-divisor v3d-divisor" onpointerdown="_uniArrastrarDivisor(event)" title="Arrastra para ajustar el espacio de cada vista"></div>
+  </div>
+
+
+
+  
+  <script>
+    window.mostrarVista = function () {
+      document.getElementById('vista_editor').style.display = 'flex';
+    };
+    window.appBoot = function () {
+      var meta = PM.meta();
+      var proyecto = meta.projects.find(function (p) { return p.id === meta.activeId; });
+      if (!proyecto && meta.projects.length) proyecto = meta.projects[0];
+      if (proyecto) abrirProyecto(proyecto.id);
+      else crearProyecto("Mi tablero", {});
+    };
+    window.volverAlInicio = function () {
+      PM.save();
+      mostrarVista('editor');
+    };
+</script>
+</body></html>

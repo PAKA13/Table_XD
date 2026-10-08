@@ -1,0 +1,21 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1684 1190" width="500" height="353">
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="m0 0h1684v1190h-1684z"/>
+		</clipPath>
+	</defs>
+	<style>
+		.s0 { fill: #404040;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: .4 }
+		.s1 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: .4 }
+		.s2 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: .4 }
+	</style>
+	<g id="Page 1" clip-path="url(#cp1)">
+		
+		<rect x="736" y="158.22" width="186.91" height="572.44" fill="#404040" stroke="none"/>
+		<path id="Path 2" class="s0" d="m922.91 730.66c123.85-40.43 207.65-155.94 207.65-286.22 0-130.28-83.8-245.79-207.65-286.22m-186.86 0c-123.85 40.43-207.65 155.94-207.65 286.22 0 130.28 83.8 245.79 207.65 286.22m-0.05 0.22v305.52h186.72v-305.52m0-572.4v-14.88h-186.72v14.88"/>
+		
+		<circle cx="829.48" cy="444.44" r="69.96" fill="#6b83ae" stroke="#000000" stroke-width=".4"/>
+		<circle cx="829.48" cy="444.44" r="46.78" fill="#8598bc" stroke="#000000" stroke-width=".4"/>
+		<path id="Path 4" class="s2" d="m760.72 431.12h50.4m86.88 0h-50.4m-86.88 27.12h50.4m86.88 0h-50.4m-36.48-27.12v-27.6h36.48v27.6m-36.48 27.12v27.36h36.48v-27.36m-111.6-299.76v572.4m186.72 0v-572.4"/>
+	</g>
+</svg>

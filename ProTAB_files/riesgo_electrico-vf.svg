@@ -1,0 +1,83 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="521.20 134.96 598.80 898.32" width="500" height="751">
+	<style>
+		.negro { fill: #000000; stroke: none }
+		.amarillo { fill: #ffeb00; stroke: none }
+		.blanco { fill: #ffffff; stroke: none }
+	</style>
+	<g id="Page 1">
+		
+		<path class="blanco" d="
+			M 525.20 138.96
+			L 1116.00 138.96
+			L 1116.00 1029.28
+			L 525.20 1029.28
+			Z
+		"/>
+
+		
+		<path class="negro" fill-rule="evenodd" d="
+			M 521.20 134.96
+			L 1120.00 134.96
+			L 1120.00 1033.28
+			L 521.20 1033.28
+			Z
+			M 525.20 138.96
+			L 525.20 1029.28
+			L 1116.00 1029.28
+			L 1116.00 138.96
+			Z
+		"/>
+
+		
+		<path class="amarillo" d="
+			M 820.60 252.21
+			L 1030.44 615.12
+			L 611.02 615.12
+			Z
+		"/>
+
+		
+		<path class="negro" fill-rule="evenodd" d="
+			M 820.60 192.21
+			L 1082.42 645.12
+			L 559.06 645.12
+			Z
+			M 820.60 252.21
+			L 611.02 615.12
+			L 1030.44 615.12
+			Z
+		"/>
+
+		
+		<path class="amarillo" d="
+			M 561.20 670.12
+			L 1080.00 670.12
+			L 1080.00 993.28
+			L 561.20 993.28
+			Z
+		"/>
+
+		
+		<text class="negro" x="820.60" y="783.28" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="85">ATENCIÓN</text>
+		<text class="negro" x="820.60" y="873.28" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="55">RIESGO</text>
+		<text class="negro" x="820.60" y="943.28" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="55">ELÉCTRICO</text>
+
+		
+		<path class="negro" d="
+			M 820.48 471.84
+			L 890.80 444.96
+			L 848.08 557.52
+			L 892.48 551.52
+			L 828.64 603.84
+			L 794.08 551.76
+			L 831.04 557.52
+			L 839.20 483.36
+			L 766.72 510.48
+			L 800.08 338.64
+			L 828.64 353.76
+			L 860.32 338.64
+			L 814.96 474.00
+			Z
+		"/>
+	</g>
+</svg>

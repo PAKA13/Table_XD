@@ -1,0 +1,24 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="465.435 190.685 686.330 686.330" width="150" height="150">
+  
+  <style>
+    /* Las cuatro clases del DWG -a rojo, b negro, c azul, d amarillo-,
+       ya todas en linea negra. */
+    .a, .b, .c, .d { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 9.03 }
+    .plata  { fill: #c0c0c0;stroke: none }
+    .oscuro { fill: #404040;stroke: none }
+    .blanco { fill: #ffffff;stroke: none }
+  </style>
+  <g>
+    <circle class="plata" cx="808.6" cy="533.7" r="338.5"/>
+    <circle class="oscuro" cx="808.6" cy="533.7" r="307.05"/>
+    <rect class="oscuro" x="740.6" y="213.7" width="135.8" height="658.8" rx="11.4"/>
+    <path class="blanco" d="M783.8 213.9L833 213.9L833 518.8A11.4 11.4 0 0 1 821.6 530.2L795.2 530.2A11.4 11.4 0 0 1 783.8 518.8Z"/>
+    <path class="a" d="m740.6 225.2v636m0-0.1c0 6.3 5.1 11.4 11.4 11.4m0-658.8c-6.3 0-11.4 5.1-11.4 11.4m124.3 647.4h-113.1m124.6-11.3v-636m-11.4 647.3c6.3 0 11.4-5.1 11.4-11.4m0-636c0-6.3-5.1-11.4-11.4-11.4"/>
+    <path class="b" d="m740.6 240.8h43.2m49.2 0h43.4"/>
+    <path class="c" fill-rule="evenodd" d="m875.5 865.6c170.5-34.4 287.2-192.4 269.9-365.5-17.2-173.1-162.9-304.9-336.8-304.9-173.9 0-319.6 131.8-336.8 304.9-17.3 173.1 99.4 331.1 269.9 365.5"/>
+    <path class="a" fill-rule="evenodd" d="m751.8 213.9h113.1"/>
+    <path class="b" d="m740.6 849.9h135.8m-135.7-561.7c-110.4 30.5-186.9 131-186.9 245.5 0 114.6 76.5 215 186.9 245.6m135.8 0c110.4-30.6 186.9-131 186.9-245.6 0-114.5-76.5-215-186.9-245.5"/>
+    <path class="d" d="m833 213.9v305.1m-11.2 11.2c6.3 0 11.4-5.1 11.4-11.4m-11.5 11.4h-26.7m-11.2-11.4c0 6.3 5.1 11.4 11.4 11.4m-11.4-11.2v-305.1h49.2"/>
+    <path class="a" d="m740.7 234.3c-139.9 31.7-239.2 156-239.2 299.4 0 143.4 99.3 267.8 239.2 299.5m135.8 0c139.9-31.7 239.2-156.1 239.2-299.5 0-143.4-99.3-267.7-239.2-299.4"/>
+  </g>
+</svg>
