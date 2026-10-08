@@ -187,6 +187,39 @@
     var d = input.gabineteData || {}, depth = num(d.profTotalMm, 135) * 5, height = Number(input.gabHmm) * 5;
     return { marco: { latWpx: depth, latHpx: height }, puertaAdosado: { visible: true, x: depth - num(d.profPuertaMm, 15) * 5, y: 0, w: Math.max(10, num(d.profPuertaMm, 15) * 5), h: height, fill: d.colorPuerta || d.colorGab }, puertaEmpotrado: { visible: false } };
   };
+  window.acomodarItmsPlan = function (list, input, plan) {
+    if (!Array.isArray(plan) || plan.length !== list.length || new Set(plan.map(function (p) { return p.idx; })).size !== list.length) return { ok: false };
+    var d = copy(input), placed = [], result = [], band = -1, floor = 0, bandEnd = 0, cursors = { left: 0, right: 0 };
+    if (d.fases === '3F+N') d.ciclo = d.ciclo.filter(function (f) { return f !== 'N'; });
+    for (var k = 0; k < plan.length; k++) {
+      var p = plan[k];
+      if (!list[p.idx] || ['left', 'right'].indexOf(p.side) < 0) return { ok: false };
+      if (Number(p.banda) !== band) {
+        floor = band < 0 ? 0 : bandEnd; band = Number(p.banda); cursors = { left: floor, right: floor };
+      }
+      var it = copy(list[p.idx]), found = false;
+      it.side = p.side; it.tieneConN = false;
+      for (var index = cursors[p.side]; index < d.ciclo.length; index++) {
+        if (!verificarPolosLibres(index, it.polos, p.side, placed, d, it.invertirN).libre || !verificarSlotTipoCompatible(it, index, p.side, placed, d).compatible) continue;
+        it.conIndex = index;
+        if (needsN(d, Number(it.polos))) {
+          var splice = calcSpliceN(it, d, placed);
+          if (!splice.ok) continue;
+          splice.itmShifts.forEach(function (shift) {
+            placed.forEach(function (old) { if (old.id === shift.id) old.conIndex = shift.newConIndex; });
+          });
+          d.ciclo = splice.newCiclo; d.aisladoTipo = splice.newAisladoTipo;
+          it.conIndex = splice.newItmConIndex; it.tieneConN = true;
+        }
+        found = true; break;
+      }
+      if (!found) return { ok: false };
+      placed.push(it); result.push({ idx: p.idx, it: it });
+      cursors[p.side] = rangoOcupado(it, d.invertirNConectores).end;
+      bandEnd = placed.reduce(function (max, old) { return Math.max(max, rangoOcupado(old, d.invertirNConectores).end); }, floor);
+    }
+    return { ok: true, ciclo: d.ciclo, aisladoTipo: d.aisladoTipo, items: result.map(function (r) { return { idx: r.idx, conIndex: r.it.conIndex, side: r.it.side, tieneConN: r.it.tieneConN }; }) };
+  };
   window.rulesPreparar = function () { return Promise.resolve(); };
   window._TABLE_XD_LOCAL_RULES = true;
 })();
