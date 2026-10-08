@@ -1,0 +1,16 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="806 127 49 935" width="22" height="415">
+	<style>
+		.s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 4 }
+		.s1 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 4 }
+		.s2 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 4 }
+	</style>
+	<g id="Page 1">
+		<path id="Path 1" fill="#c0c0c0" stroke="none" d="M808 129.68 L824.8 129.68 L841.6 146.48 L841.6 1042.88 L824.8 1059.68 L808 1059.68 Z"/>
+		<path id="Path 2" class="s0" d="m841.6 146.48v896.4m-33.6 16.8v-930m0 0h16.8"/>
+		<path id="Path 3" fill-rule="evenodd" class="s1" d="m824.8 129.68v930"/>
+		<path id="Path 4" class="s0" d="m841.6 146.48l-16.8-16.8m-16.8 930h16.8m16.8-16.8l-16.8 16.8"/>
+		<path id="Path 7" fill="#ff0000" stroke="none" d="M841.6 712.4 L841.6 897.2 L841.72 897.2 c3.21 0 6.26 -1.38 8.38 -3.79 2.12 -2.41 3.1 -5.62 2.69 -8.8 L852.64 886.16 Z"/>
+		<path id="Path 5" fill-rule="evenodd" class="s2" d="m841.6 712.4v184.8"/>
+		<path id="Path 6" class="s2" d="m841.6 712.4l11.04 173.76m-10.92 11.04c3.21 0 6.26-1.38 8.38-3.79 2.12-2.41 3.1-5.62 2.69-8.8"/>
+	</g>
+</svg>

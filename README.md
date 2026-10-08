@@ -1,15 +1,17 @@
 # Table_XD
 
-Editor web de tableros eléctricos con interfaz en español, colores verde petróleo y turquesa, y apertura directa al editor.
+Editor de tableros eléctricos en español, con guardado local, biblioteca de componentes, vistas del tablero, informes y visor 3D. El editor abre directamente, sin registro ni autenticación.
 
-## Uso
+## Funcionamiento
 
-Abre `index.html` en el navegador. Los proyectos se guardan localmente en el navegador.
+La versión para GitHub Pages ejecuta las reglas de creación y distribución en el navegador. Incluye un motor local reconstruido a partir de las estructuras, medidas y catálogos de la interfaz recuperada; no es una copia del motor original del servidor.
 
-## GitHub Pages
+Los proyectos se guardan en el navegador y pueden abrirse de nuevo al recargar. Los dibujos y dependencias del visor 3D están incluidos en este repositorio.
 
-En la configuración del repositorio, entra a **Pages** y selecciona **GitHub Actions** como origen. El flujo de publicación se ejecuta al subir cambios a `main`.
+## Publicación
 
-## Disponibilidad de funciones
+GitHub Pages está configurado con GitHub Actions. Cada cambio en la rama main actualiza la página.
 
-Esta carpeta contiene la interfaz descargada y sus recursos locales. Algunas operaciones requieren la API original `/api/rules/batch`, que no está incluida y no funciona en GitHub Pages por sí sola. El visor 3D descargado contiene un documento vacío.
+## Bibliotecas
+
+El visor utiliza Three.js. Su licencia se conserva en vendor/three/LICENSE.

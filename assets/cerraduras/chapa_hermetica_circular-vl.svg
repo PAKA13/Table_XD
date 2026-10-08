@@ -1,0 +1,17 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="725 177 158 787" width="27.5" height="139">
+	<style>
+		.s0 { fill: none;stroke: #0000ff;stroke-linecap: round;stroke-linejoin: round;stroke-width: .4 }
+		.s1 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: .4 }
+		.sfill { fill: #404040;stroke: none }
+	</style>
+	<g id="Page 1">
+		
+		<path id="PathFill" class="sfill" d="M726.88 178.16 L740.8 178.16 L881.92 231.92 L881.92 909.44 L740.8 962.96 L726.88 962.96 Z"/>
+		
+		<path id="Path 2" class="s0" d="m726.88 178.16v784.8m13.92 0l141.12-53.52m0-677.52l-141.12-53.76m141.12 53.76v677.52m-155.04 53.52h13.92"/>
+		
+		<path id="Path 3" fill-rule="evenodd" class="s1" d="m740.8 962.96v-784.8"/>
+		
+		<path id="Path 4" fill-rule="evenodd" class="s0" d="m740.8 178.16h-13.92"/>
+	</g>
+</svg>

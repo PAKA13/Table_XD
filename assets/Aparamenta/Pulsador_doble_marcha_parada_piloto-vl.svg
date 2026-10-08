@@ -1,0 +1,42 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="726.88 202.16 172.56 695.76" preserveAspectRatio="none" width="62" height="250">
+	
+	<style>
+		/* Los colores originales del DWG (s0 amarillo, s1 azul, s2 verde,
+		   s3 rojo) eran solo la LEYENDA de que relleno va en cada zona.
+		   El trazo visible va en negro, igual que la vista frontal.
+		   Grosor 3.2 = 0.23 mm (equivale al stroke-width 4 del frontal). */
+		.s0, .s1, .s2, .s3 {
+			fill: none; stroke: #000000;
+			stroke-linecap: round; stroke-linejoin: round;
+			stroke-width: 3.2
+		}
+	</style>
+	
+	<g id="Rellenos">
+		
+		<path fill="#c4c4c4" stroke="none" d="M726.88 202.16 H885.28 V897.92 H726.88 Z"/>
+		
+		<path fill="#2eb85c" stroke="none" d="M885.28 245.12 L889.60 265.76 C891.20 273.18 892.00 280.92 892.00 288.68 L892.00 440.84 C892.00 448.60 891.20 456.34 889.61 463.93 L885.28 484.64 Z"/>
+		
+		<path fill="#d42020" stroke="none" d="M885.28 617.12 L889.60 637.76 C891.20 645.18 892.00 652.92 892.00 660.68 L892.00 812.84 C892.00 820.60 891.20 828.34 889.61 835.93 L885.28 856.64 Z"/>
+		
+		<path fill="#ffe4bf" stroke="none" d="M885.28 497.84 L890.44 497.60 C893.04 497.60 895.43 499.02 896.66 501.30 L899.44 506.96 L899.44 593.12 L896.66 598.53 C895.43 600.82 893.04 602.24 890.44 602.24 L885.28 602.24 Z"/>
+	</g>
+	<g id="Page 1">
+		<path id="Path 2" class="s0" d="m885.28 897.92h-109.92m6.96-28.08h102.96"/>
+		<path id="Path 3" class="s1" d="m899.44 593.12l-2.88 5.52m-6.12 3.6c2.6 0 4.99-1.42 6.22-3.71m2.78-91.57l-2.88-5.52m0.1-0.14c-1.24-2.28-3.62-3.7-6.22-3.7"/>
+		<path id="Path 4" class="s0" d="m782.32 230.24h102.96m-109.92-28.08h109.92m-102.96 667.68v-639.6m102.96 267.6v-295.68"/>
+		<path id="Path 5" fill-rule="evenodd" class="s2" d="m889.6 464l-4.32 20.64"/>
+		<path id="Path 6" fill-rule="evenodd" class="s3" d="m889.6 637.76l-4.32-20.64"/>
+		<path id="Path 7" fill-rule="evenodd" class="s1" d="m890.32 497.84v104.4"/>
+		<path id="Path 8" fill-rule="evenodd" class="s3" d="m891.76 812.96v-152.16"/>
+		<path id="Path 9" fill-rule="evenodd" class="s2" d="m891.76 440.96v-152.16"/>
+		<path id="Path 10" fill-rule="evenodd" class="s1" d="m899.44 593.12v-86.16"/>
+		<path id="Path 11" fill-rule="evenodd" class="s3" d="m889.6 836l-4.32 20.64"/>
+		<path id="Path 12" fill-rule="evenodd" class="s2" d="m889.6 265.76l-4.32-20.64"/>
+		<path id="Path 13" class="s3" d="m889.61 835.93c1.59-7.59 2.39-15.33 2.39-23.09m0-152.16c0-7.76-0.8-15.5-2.39-23.09m2.16 28.64q0.18-1.76 0.22-3.54"/>
+		<path id="Path 14" class="s2" d="m889.61 463.93c1.59-7.59 2.39-15.33 2.39-23.09m0-152.16c0-7.76-0.8-15.5-2.39-23.09"/>
+		<path id="Path 15" class="s1" d="m885.28 497.84h5.04m-5.04 104.4h5.04"/>
+		<path id="Path 16" class="s0" d="m726.88 202.16h48.48v695.76h-48.48zm158.4 400.08v295.68m-102.96-400.08h102.96v104.4h-102.96z"/>
+	</g>
+</svg>

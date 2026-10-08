@@ -1,0 +1,4053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conector de Riel — Table_XD</title>
+<style>
+  
+  :root{
+    --bg:#e2e6ec; --panel:#ffffff; --line:#e3e7ee;
+    --tx:#16202e; --tx2:#5b6778; --ac:#0f8b7c; --or:#c76b30;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);
+    color:var(--tx);font:13px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+  #cv{position:fixed;inset:0;display:block;width:100%;height:100%}
+
+  #labels{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+  .dimlbl{font:11px/1.35 -apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--tx);background:rgba(255,255,255,.92);border:1px solid #c7cfda;
+    padding:0 6px;border-radius:4px;white-space:nowrap;
+    font-variant-numeric:tabular-nums;pointer-events:none;
+    transform:translate(-50%,-50%)}
+  .dimlbl i{color:var(--tx2);font-style:normal;margin-right:4px}
+  .dimlbl.key{color:#7c2d12;border-color:#e0a880;background:rgba(255,247,240,.95)}
+
+  .panel{position:fixed;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;z-index:10;box-shadow:0 1px 3px rgba(22,32,46,.07)}
+
+  
+  #info{top:16px;left:16px;padding:10px 14px}
+  
+  #info{display:none}
+  #info h1{margin:0 0 6px;font-size:12px;font-weight:600}
+  .part{padding:2px 0}
+  .part .hd{display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:2px;flex:none;
+    box-shadow:inset 0 0 0 1px rgba(22,32,46,.25)}
+  .part .nm{font-size:11.5px;color:var(--tx2)}
+
+  
+  #side{top:16px;left:16px;width:252px;padding:14px 16px;
+    max-height:calc(100vh - 32px);overflow-y:auto}
+  #side h2{margin:0 0 10px;font-size:13px;font-weight:600}
+  
+  #side .plegar{display:flex;align-items:center;justify-content:space-between;
+    width:100%;background:none;border:0;padding:0;margin:0 0 12px;
+    font-size:13px;font-weight:700;color:var(--tx);cursor:pointer}
+  #side .plegar:hover{background:none;color:var(--ac)}
+  #side .plegar span{display:flex;align-items:center;gap:8px}
+  #side .plegar span svg{width:16px;height:16px;color:var(--ac)}
+  #side .plegar i{display:flex;font-style:normal;color:var(--tx2);transition:transform .15s}
+  #side .plegar i svg{width:16px;height:16px}
+  #side.plegado{width:auto;min-width:150px;padding:9px 14px}
+  #side.plegado .plegar{margin:0}
+  #side.plegado .plegar i{transform:rotate(180deg)}
+  #side.plegado #sideCuerpo{display:none}
+  #side h2.sep{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+  .ctl{margin-bottom:12px}
+  .ctl.off{display:none}
+  
+  #side.recogido #dimCtls .ctl.dato{display:none}
+  
+  #dimCtls .ctl.aviso{display:none !important}
+  .enlace{background:none;border:0;padding:0;margin:0 0 10px;color:var(--ac);
+    font-size:11px;cursor:pointer}
+  .enlace:hover{background:none;text-decoration:underline}
+  .dev{display:flex;justify-content:space-between;padding:3px 0;
+    color:var(--tx2);font-size:11px}
+  .dev b{color:var(--tx);font-weight:600;font-variant-numeric:tabular-nums}
+  .dev.tot{border-top:1px solid var(--line);margin-top:5px;padding-top:6px}
+  .dev.tot span{color:var(--tx)}
+  .ctl label{display:flex;justify-content:space-between;
+    color:var(--tx2);font-size:11px;margin-bottom:5px}
+  .ctl label b{color:var(--tx);font-weight:600;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--or);margin:0}
+  input[type=range]:disabled{opacity:.35}
+  .chk{display:flex;align-items:center;gap:7px;margin:-4px 0 10px;
+    color:var(--tx2);font-size:11px;cursor:pointer;user-select:none}
+  .chk input{accent-color:var(--or);margin:0;cursor:pointer}
+  .ctl.atenuada label span{opacity:.45}
+  .chk.atenuada span{opacity:.45}
+  
+  select{width:100%;background:#fff;color:var(--tx);border:1px solid #cfd6e0;
+    border-radius:7px;padding:6px 8px;font:inherit;font-size:12px}
+
+  #tools{bottom:16px;left:16px;padding:6px;display:flex;gap:4px}
+  
+  #tools{display:none}
+  .ver-fila{display:flex;gap:6px}
+  .ver-fila button{flex:1}
+  
+  #bReset.casa{position:fixed;top:16px;left:16px;z-index:11;width:24px;height:24px;
+    padding:3px;background:transparent;border:0;border-radius:5px;color:#7a8596;
+    display:flex;align-items:center;justify-content:center}
+  #bReset.casa svg{width:100%;height:100%}
+  #bReset.casa:hover{background:rgba(255,255,255,.7);color:var(--ac)}
+  
+  #arribaDer{position:fixed;top:16px;right:16px;z-index:10}
+  #arribaDer > .panel{position:static}
+  #acciones{padding:4px;display:flex;gap:2px}
+  #acciones button{width:32px;height:32px;padding:6px;display:flex;
+    align-items:center;justify-content:center}
+  #acciones button svg{width:18px;height:18px}
+  #bCerrar:hover{color:#c62828}
+  
+  @media (max-width: 480px){
+    #side{top:64px;width:auto;right:16px}
+    #side.plegado{right:auto}
+  }
+  button{background:#fff;color:var(--tx);border:1px solid #cfd6e0;
+    border-radius:7px;padding:6px 11px;cursor:pointer;font:inherit;font-size:12px}
+  button:hover{background:#f2f4f8;border-color:#b8c2d0}
+  button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+  button.on:hover{background:#255fd6;border-color:#255fd6}
+  
+  #tools button:not(.on), #acciones button:not(.on){border-color:transparent}
+  #tools button:not(.on):hover, #acciones button:not(.on):hover{border-color:#cfd6e0}
+  button.off{display:none}
+  
+  button.ancho{width:100%;margin-top:14px;padding:9px 12px}
+
+  #err{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    max-width:470px;padding:18px 22px;display:none;
+    background:var(--panel);border:1px solid #f85149;border-radius:10px;z-index:20}
+  #err.show{display:block}
+  #err b{color:#f85149;display:block;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<canvas id="cv"></canvas>
+<div id="labels"></div>
+
+<div id="info" class="panel">
+  <h1 id="hTitle">Modelo</h1>
+  <div id="parts"></div>
+</div>
+
+<div id="arribaDer">
+<div id="acciones" class="panel">
+  
+  
+  <button id="bDividir" title="Dividir pantalla" aria-label="Dividir pantalla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg></button>
+  <button id="bCompleta" class="on" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button id="bCerrar" title="Cerrar" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+</div>
+<div id="side" class="panel recogido">
+  
+  <button id="bPlegar" class="plegar" title="Mostrar u ocultar los ajustes" aria-label="Ajustes"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Ajustes</span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></i></button>
+  <div id="sideCuerpo">
+  <h2>Sistema</h2>
+  <div class="ctl" id="sisFijo" style="color:var(--tx2)">—</div>
+  <select id="selSis" autocomplete="off" style="display:none"></select>
+
+  <h2 class="sep">Modelo</h2>
+  <div class="ctl">
+    <select id="selMod" autocomplete="off"></select>
+  </div>
+  <button id="bDetalles" class="enlace">Ver detalles</button>
+  <div id="dimCtls"></div>
+  
+  <h2 class="sep">Ver</h2>
+  <div class="ver-fila">
+    <button id="bCota" class="on">Cotas</button>
+    <button id="bPin" class="on">Perno</button>
+  </div>
+  </div>
+  </div>
+
+  <h2 class="sep">Platina desarrollada</h2>
+  <div id="devs"></div>
+  <button id="bGuardar" class="on ancho">Guardar cotas</button>
+</div>
+
+
+<button id="bReset" class="casa" title="Encuadrar" aria-label="Encuadrar">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>
+</button>
+
+<div id="tools" class="panel">
+  
+  <button id="bPlanta" hidden>Planta</button>
+  <button id="bIso" hidden>Isométrica</button>
+  
+  <button id="bDibujo" hidden>Dibujo</button>
+  
+  <button id="bGrid" class="on" hidden>Rejilla</button>
+  
+  <button id="bPlano" hidden>Al plano</button>
+</div>
+
+<div id="err" class="panel"><b>No se pudo cargar</b><span id="errm"></span></div>
+
+
+
+<script src="./ProTAB_files/barra-pe-malla.js?v=1907"></script>
+
+<script src="./ProTAB_files/barra-fase-malla.js?v=1907"></script>
+
+<script src="./ProTAB_files/conector-c1-malla.js?v=1907"></script>
+
+<script src="./ProTAB_files/c1-al-ig.js?v=1907"></script>
+
+<script src="./ProTAB_files/columna.js?v=1907"></script>
+<script src="./ProTAB_files/malla-util.js?v=1907"></script>
+
+<script src="./ProTAB_files/aislador-base-malla.js?v=1907"></script>
+
+<script src="./ProTAB_files/conector-s-malla.js?v=1907"></script>
+
+<script src="./ProTAB_files/conector-rt-malla.js?v=1907"></script>
+
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three/build/three.module.js",
+  "three/addons/":"./vendor/three/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {CSS2DRenderer, CSS2DObject} from 'three/addons/renderers/CSS2DRenderer.js';
+
+
+
+
+
+
+
+
+const ACERO = 0xf0803c;                                                
+
+
+
+const PLATINA = {ancho:10, espesor:2};
+
+
+
+
+
+
+
+
+
+
+
+
+
+const SOPORTE_RT    = {ancho:10, espesor:2, radio:2, saliente:2, pie:16.66,
+                       ranura:{desde:6.5, largo:7, ancho:5},
+                       escalon:{alto:11.3, angulo:42, tramo:15.49},
+                       alto:44.5, brida:{largo:7.5, agujero:5, desde:3.5}};
+const SOPORTE_INTER = {ancho:10, espesor:2, radio:2, saliente:2, pie:15,
+                       ranura:{desde:6.5, largo:7, ancho:5},
+                       escalon:null,
+                       alto:44.5, brida:{largo:10, agujero:5, desde:4.5}};
+const PLACA_CAT = {ancho:10, espesor:2, recto:23, cabeza:11, cuello:5.2,
+                   radioPunta:2.6, curvaEscalon:true, agujero:5};
+const PLACA = {color:ACERO, label:'Placa (RT · parte 2)'};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const RAN_M1 = {desde:10, largo:8.6, ancho:6.6};
+const SOPORTE_RT_M1    = {ancho:15, espesor:3, radio:3, saliente:0, pie:18,
+                          ranura:RAN_M1,
+                          escalon:{alto:11.3, angulo:42, tramo:13.50},
+                          alto:44.5, brida:{largo:22, agujero:5, desde:3.5}};
+const SOPORTE_INTER_M1 = {ancho:15, espesor:3, radio:3, saliente:0, pie:15.50,
+                          ranura:RAN_M1, escalon:null,
+                          alto:44.5, brida:{largo:22, agujero:5, desde:4.5}};
+const PLACA_M1 = {ancho:15, espesor:3, recto:35, cabeza:18, cuello:15,
+                  radioPunta:0, curvaEscalon:false, agujero:5};
+
+
+
+
+
+
+
+
+function fichasDe(id){
+  return /-m1$/.test(id)
+    ? {rt:SOPORTE_RT_M1, inter:SOPORTE_INTER_M1, placa:PLACA_M1}
+    : {rt:SOPORTE_RT,    inter:SOPORTE_INTER,    placa:PLACA_CAT};
+}
+
+function mallaRT(id, o, mat){
+  const F = fichasDe(id);
+  const ficha = /^inter/.test(id) ? F.inter : F.rt;
+  const sop = construirSoporteRT(THREE, Object.assign({}, ficha, (o && o.soporte) || {}));
+  const pla = construirPlacaRT(THREE, Object.assign({}, F.placa, (o && o.placa) || {}));
+  const m = () => mat || new THREE.MeshStandardMaterial({color:ACERO, metalness:0.55, roughness:0.42});
+  const base = new THREE.Mesh(sop.geo, m());
+  base.userData.medidas = sop;
+  base.userData.agujeros = [sop.agujero];
+  base.userData.pie = sop.pie;
+  const edit = new THREE.Mesh(pla.geo, m());
+  edit.userData.medidas = pla;
+  edit.userData.agujeros = [pla.agujero];
+  return {base, edit, soporte:sop, placa:pla};
+}
+
+const MODELOS = [
+  {
+
+
+
+    id:'rt', label:'Conector RT', generado:true,
+    base:{color:ACERO, label:'RT · parte 1 (soporte)'},
+    edit:PLACA,
+    mallaCatalogo: () => mallaRT('rt'),
+  },
+  {
+    id:'inter', label:'Conector intermedio', generado:true,
+    base:{color:ACERO, label:'Intermedio · parte 1 (soporte)'},
+    edit:PLACA,
+    mallaCatalogo: () => mallaRT('inter'),
+  },
+  {
+
+
+
+
+
+    id:'s', label:'Conector S', generado:true,
+    edit:{color:ACERO, label:'Fases S'},
+    pletina:{ancho:10, espesor:2},
+    mallaCatalogo: () => mallaS(),
+  },
+
+
+
+
+
+  {
+    id:'rt-m1', label:'Conector RT · CM Fijo', generado:true, fam:'M1', recto:true,
+    base:{color:ACERO, label:'RT CM Fijo · parte 1 (soporte)'},
+    edit:{color:ACERO, label:'Placa CM Fijo (parte 2)'},
+    pletina:{ancho:15, espesor:3},
+    mallaCatalogo: () => mallaRT('rt-m1'),
+  },
+  {
+    id:'inter-m1', label:'Conector intermedio · CM Fijo', generado:true, fam:'M1', recto:true,
+    base:{color:ACERO, label:'Intermedio CM Fijo · parte 1 (soporte)'},
+    edit:{color:ACERO, label:'Placa CM Fijo (parte 2)'},
+    pletina:{ancho:15, espesor:3},
+    mallaCatalogo: () => mallaRT('inter-m1'),
+  },
+  {
+    id:'s-m1', label:'Conector S · CM Fijo', generado:true, fam:'M1', recto:true,
+    edit:{color:ACERO, label:'Fases S · CM Fijo'},
+    pletina:{ancho:15, espesor:3},
+    mallaCatalogo: () => mallaS(null, null, 'M1'),
+  },
+  {
+
+
+
+
+    id:'c1', label:'Conector C1', generado:true,
+    edit:{color:ACERO, label:'Conector C1'},
+    pletina:{ancho:20, espesor:3}, soloVer:true, lateral:0,
+  },
+  {
+
+
+
+    id:'c1rt', label:'Conector C1 acodado', generado:true,
+    edit:{color:ACERO, label:'Conector C1 R/T'},
+
+
+
+    soloVer:true, lateral:9.5,
+  },
+  {
+
+
+
+
+
+
+
+
+
+
+    id:'barraPE', label:'Barra PE', generado:true,
+    color:ACERO, etiqueta:'Barra PE (20 x 3 mm)',
+
+    escalaCotas:0.12,
+
+
+
+
+
+
+
+    ala: {label:'Ala por lado', rango:[13, 60], clave:'alaPE'},
+    alto:{label:'Alto',         rango:[12, 60], clave:'altoPE'},
+    radio:3,
+  },
+  {
+
+
+    id:'barraN', label:'Barra N', generado:true,
+    color:ACERO, etiqueta:'Barra N (20 x 3 mm)',
+    escalaCotas:0.12,
+    aislador:{label:'Alto del aislador', rango:[15, 90], clave:'altoAisN'},
+  },
+  {
+
+
+
+
+
+
+    id:'barrasFase', label:'Barras principales', generado:true,
+    etiqueta:'Barras principales (20 x 3 mm)',
+
+    escalaCotas:0.10,
+    ancho:20, espesor:3,
+
+    colores:{R:0xcc0000, S:0x2d2d2d, T:0x0044cc, N:0xffffff},
+
+
+
+    fondo:{label:'Fondo del aislador', rango:[15, 90], clave:'fondoAis'},
+
+
+
+
+
+    escalon:{casilla:'Escalón de 90° al IG', clave:'escOn',
+             alto:{label:'Altura del escalón', rango:[9, 80], clave:'escAlto', defecto:20},
+             pie:{label:'Pie entre aislador y pliegue', rango:[0, 30], clave:'escPie', defecto:0}},
+  },
+];
+
+
+
+
+
+const memoria = {};
+
+
+
+
+
+
+const SISTEMAS = [
+  {label:'3F', modelos:[
+    {id:'rt',         fases:'fases R y T',    cubre:['R', 'T']},
+    {id:'s',          fases:'fase S',         cubre:['S']},
+    {id:'rt-m1',      fases:'ITM CM Fijo'},
+    {id:'s-m1',       fases:'ITM CM Fijo'},
+    {id:'c1',         fases:'del busbar al IG'},
+    {id:'c1rt',       fases:'R y T'},
+    {id:'barrasFase', fases:'R, S y T'},
+    {id:'barraN',     fases:'neutro'},
+    {id:'barraPE',    fases:'tierra'},
+  ]},
+  {label:'3F + N', modelos:[
+    {id:'rt',         fases:'fases R y N',    cubre:['R', 'N']},
+    {id:'inter',      fases:'fases S y T',    cubre:['S', 'T']},
+    {id:'rt-m1',      fases:'ITM CM Fijo'},
+    {id:'inter-m1',   fases:'ITM CM Fijo'},
+    {id:'s-m1',       fases:'ITM CM Fijo'},
+    {id:'c1',         fases:'del busbar al IG'},
+    {id:'c1rt',       fases:'R y T'},
+    {id:'barrasFase', fases:'R, S, T y N'},
+    {id:'barraN',     fases:'neutro'},
+    {id:'barraPE',    fases:'tierra'},
+  ]},
+];
+
+
+
+
+
+
+const MODELOS_OCULTOS = new Set(['rt', 's', 'inter', 'rt-m1', 's-m1', 'inter-m1',
+                                 'c1', 'c1rt', 'gabinete']);
+
+const $ = id => document.getElementById(id);
+const fail = m => { $('errm').textContent = m; $('err').classList.add('show'); };
+
+
+const canvas = $('cv');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+
+
+
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+
+const labels = new CSS2DRenderer({element: $('labels')});
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xe2e6ec);
+scene.environment = new THREE.PMREMGenerator(renderer)
+  .fromScene(new RoomEnvironment(), 0.04).texture;
+
+const key = new THREE.DirectionalLight(0xffffff, 1.8);
+key.position.set(1, 2, 1.5);
+scene.add(key, new THREE.AmbientLight(0xffffff, 0.35));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 20000);
+const orto = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 1e5);
+let ojo = camera;
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+const asm = new THREE.Group();
+scene.add(asm);
+
+let grid = null, pin = null, holder = null, partMesh = null;
+let dims = null, dimsA = null, piezas = [];
+
+
+let barrasPorFase = [];
+const lineasDe = new Map();                                                              
+let esConjunto = false, dimScale = 12;
+
+
+
+let destino = 'dimCtls';
+let cotasTocadas = false;                                         
+
+const SIN_COTAS_AL_ABRIR = new Set(['barrasFase', 'barraPE', 'barraN']);
+
+
+
+
+
+const loader = new GLTFLoader();
+
+function loadPart(url){
+  return new Promise((res, rej) => loader.load(url, gltf => {
+    const root = gltf.scene;
+    root.scale.setScalar(1000);                                          
+    root.updateMatrixWorld(true);
+
+
+    const cams = [];
+    root.traverse(o => { if (o.isCamera) cams.push(o); });
+    cams.forEach(c => c.removeFromParent());
+    res(root);
+  }, undefined, e => rej(new Error(url + ' — ' + (e.message || e)))));
+}
+
+
+function disposeTree(root){
+  root.traverse(o => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) [].concat(o.material).forEach(m => m.dispose());
+  });
+}
+
+
+
+
+function findHoles(root){
+  const out = [];
+  for (const c of bordesVerticales(root)){
+    const cx = c.reduce((s, p) => s + p.x, 0) / c.length;
+    const cz = c.reduce((s, p) => s + p.z, 0) / c.length;
+    const rs = c.map(p => Math.hypot(p.x - cx, p.z - cz));
+    const r  = rs.reduce((a, b) => a + b, 0) / rs.length;
+    if (r < 0.8) continue;
+    if (Math.max(...rs.map(v => Math.abs(v - r))) > 0.35) continue;                   
+    if (!haciaDentro(c, cx, cz)) continue;                                                
+    out.push({cx, cz, r,
+              ymin: Math.min(...c.map(p => p.y)),
+              ymax: Math.max(...c.map(p => p.y))});
+  }
+  return out;
+}
+
+
+
+
+
+
+function findRanuras(root){
+  const out = [];
+  for (const c of bordesVerticales(root)){
+    const cx = c.reduce((s, p) => s + p.x, 0) / c.length;
+    const cz = c.reduce((s, p) => s + p.z, 0) / c.length;
+    const rs = c.map(p => Math.hypot(p.x - cx, p.z - cz));
+    const r  = rs.reduce((a, b) => a + b, 0) / rs.length;
+    if (r < 0.8) continue;
+    if (Math.max(...rs.map(v => Math.abs(v - r))) <= 0.35) continue;               
+    if (!haciaDentro(c, cx, cz)) continue;
+    const xs = c.map(p => p.x), zs = c.map(p => p.z);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs);
+    const z0 = Math.min(...zs), z1 = Math.max(...zs);
+    out.push({cx:(x0 + x1) / 2, cz:(z0 + z1) / 2,
+              ancho: Math.min(x1 - x0, z1 - z0),
+              largo: Math.max(x1 - x0, z1 - z0),
+              ymin: Math.min(...c.map(p => p.y)),
+              ymax: Math.max(...c.map(p => p.y))});
+  }
+  return out;
+}
+
+
+
+function haciaDentro(c, cx, cz){
+  return c.filter(p => p.nx*(p.x-cx) + p.nz*(p.z-cz) < 0).length / c.length >= 0.85;
+}
+
+
+
+
+function bordesVerticales(root){
+  const pts = [];
+  root.updateMatrixWorld(true);
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const g = o.geometry, P = g.attributes.position, N = g.attributes.normal;
+    const nm = new THREE.Matrix3().getNormalMatrix(o.matrixWorld);
+    const v = new THREE.Vector3(), n = new THREE.Vector3();
+    for (let i = 0; i < P.count; i++){
+      n.fromBufferAttribute(N, i).applyMatrix3(nm).normalize();
+      if (Math.abs(n.y) > 0.25) continue;
+      v.fromBufferAttribute(P, i).applyMatrix4(o.matrixWorld);
+      pts.push({x:v.x, y:v.y, z:v.z, nx:n.x, nz:n.z});
+    }
+  });
+
+  const par = pts.map((_, i) => i);
+  const find = a => par[a] === a ? a : (par[a] = find(par[a]));
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++){
+      if (Math.hypot(pts[i].x - pts[j].x, pts[i].z - pts[j].z) >= 2) continue;
+      const a = find(i), b = find(j);
+      if (a !== b) par[a] = b;
+    }
+  const groups = {};
+  pts.forEach((p, i) => { (groups[find(i)] ||= []).push(p); });
+
+  return Object.keys(groups).map(k => groups[k]).filter(c => c.length >= 8);
+}
+
+
+const DIMC = 0x4f7fd6, DIMK = 0xc76b30;
+
+
+
+function makeDim(p0, p1, dir, off, tag, value, destaca, alza = 1.1){
+  const g = new THREE.Group();
+  const A = p0.clone().addScaledVector(dir, off);
+  const B = p1.clone().addScaledVector(dir, off);
+  const over = Math.max(1.5, off * 0.10);
+  const gapv = Math.max(0.8, off * 0.05);
+
+  const pts = [
+    p0.clone().addScaledVector(dir, gapv), A.clone().addScaledVector(dir, over),
+    p1.clone().addScaledVector(dir, gapv), B.clone().addScaledVector(dir, over),
+    A, B,
+  ];
+  g.add(new THREE.LineSegments(
+    new THREE.BufferGeometry().setFromPoints(pts),
+    new THREE.LineBasicMaterial({color: destaca ? DIMK : DIMC})));
+
+  const el = document.createElement('div');
+  el.className = 'dimlbl' + (destaca ? ' key' : '');
+  el.innerHTML = `<i>${tag}</i>${value.toFixed(1)}`;
+  const lbl = new CSS2DObject(el);
+  lbl.position.copy(A).lerp(B, 0.5).addScaledVector(dir, over * alza);
+  g.add(lbl);
+  return g;
+}
+
+
+
+function setDimsVisible(on){
+  for (const d of [dims, dimsA]) if (d) d.traverse(o => { o.visible = on; });
+}
+
+
+
+
+function makeNota(p0, dir, largo, tag, texto, destaca){
+  const g = new THREE.Group();
+  const fin = p0.clone().addScaledVector(dir.clone().normalize(), largo);
+  g.add(new THREE.LineSegments(
+    new THREE.BufferGeometry().setFromPoints([p0.clone(), fin]),
+    new THREE.LineBasicMaterial({color: destaca ? DIMK : DIMC})));
+  const el = document.createElement('div');
+  el.className = 'dimlbl' + (destaca ? ' key' : '');
+  el.innerHTML = `<i>${tag}</i>${texto}`;
+  const lbl = new CSS2DObject(el);
+  lbl.position.copy(fin);
+  g.add(lbl);
+  return g;
+}
+
+
+
+
+
+function makeAng(vert, dirRef, dirLado, largo, tag, grados, destaca){
+  const a = dirRef.clone().normalize(), b = dirLado.clone().normalize();
+  const eje = new THREE.Vector3().crossVectors(a, b);
+  const tot = a.angleTo(b);
+  if (tot < 1e-4 || eje.lengthSq() < 1e-12) return null;                 
+  eje.normalize();
+
+  const g = new THREE.Group();
+  const pts = [
+    vert.clone(), vert.clone().addScaledVector(a, largo),
+    vert.clone(), vert.clone().addScaledVector(b, largo),
+  ];
+  const R = largo * 0.8, N = 24;
+  let ant = null;
+  for (let i = 0; i <= N; i++){
+    const q = new THREE.Quaternion().setFromAxisAngle(eje, tot * i / N);
+    const p = vert.clone().addScaledVector(a.clone().applyQuaternion(q), R);
+    if (ant) pts.push(ant, p);
+    ant = p;
+  }
+  g.add(new THREE.LineSegments(
+    new THREE.BufferGeometry().setFromPoints(pts),
+    new THREE.LineBasicMaterial({color: destaca ? DIMK : DIMC})));
+
+  const el = document.createElement('div');
+  el.className = 'dimlbl' + (destaca ? ' key' : '');
+  el.innerHTML = `<i>${tag}</i>${grados.toFixed(2)}°`;
+  const lbl = new CSS2DObject(el);
+  const medio = new THREE.Quaternion().setFromAxisAngle(eje, tot / 2);
+  lbl.position.copy(vert).addScaledVector(a.clone().applyQuaternion(medio), R * 1.12);
+  g.add(lbl);
+  return g;
+}
+
+function clearDims(){
+  for (const d of [dims, dimsA]){
+    if (!d) continue;
+    d.traverse(o => {
+      if (o.isLineSegments){ o.geometry.dispose(); o.material.dispose(); }
+      if (o.isCSS2DObject) o.element.remove();
+    });
+    d.removeFromParent();
+  }
+  dims = null; dimsA = null;
+}
+
+
+function cajaPiezas(){
+  const box = new THREE.Box3(), m = new THREE.Matrix4();
+  asm.updateWorldMatrix(true, false);
+  const inv = new THREE.Matrix4().copy(asm.matrixWorld).invert();
+  for (const root of piezas)
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      o.updateWorldMatrix(true, false);
+      o.geometry.computeBoundingBox();
+      box.union(o.geometry.boundingBox.clone()
+                 .applyMatrix4(m.copy(inv).multiply(o.matrixWorld)));
+    });
+  return box;
+}
+
+
+
+function filaInfo(label){
+  const d = document.createElement('div');
+
+
+  d.className = 'ctl dato' + (/^Aviso/.test(label) ? ' aviso' : '');
+  d.innerHTML = `<label><span>${label}</span> <b>&mdash;</b></label>`;
+  $(destino).appendChild(d);
+  return d.querySelector('b');
+}
+
+function filaDev(label, clase){
+  const d = document.createElement('div');
+  d.className = 'dev' + (clase ? ' ' + clase : '');
+  d.innerHTML = `<span>${label}</span><b>—</b>`;
+  $('devs').appendChild(d);
+  return d.querySelector('b');
+}
+
+
+
+function paint(root, hex){
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    o.material = o.material.clone();
+    o.material.color.setHex(hex);
+    o.material.metalness = 0.55;
+    o.material.roughness = 0.42;
+  });
+}
+
+function card(p){
+  const d = document.createElement('div');
+  d.className = 'part';
+  d.innerHTML =
+    `<div class="hd"><span class="dot" style="background:#${p.color.toString(16).padStart(6,'0')}"></span>
+     <span class="nm">${p.label}</span></div>`;
+  $('parts').appendChild(d);
+}
+
+
+
+
+
+function addSlider(label, min, max, val, anclaMin = false, clave = null, paso = 0.5){
+  const d = document.createElement('div');
+  d.className = 'ctl';
+  d.innerHTML = `<label><span>${label}</span> <b>—</b></label><input type="range">`;
+  const input = d.querySelector('input');
+  const pedido = (clave && memoria[clave] !== undefined) ? memoria[clave] : val;
+  input.step = paso;
+  const pasos = Math.max(0, Math.floor((val - min) / paso));
+  input.min = (anclaMin ? +min : val - pasos * paso).toFixed(3);
+  input.max = (+max).toFixed(3);
+  input.value = (+pedido).toFixed(3);                                         
+
+
+  input.oninput = () => { if (clave) memoria[clave] = +input.value; };
+  $(destino).appendChild(d);
+  return {row:d, input, out:d.querySelector('b')};
+}
+
+
+function addCheck(texto, clave, alCambiar, porDefecto = false){
+  const d = document.createElement('label');
+  d.className = 'chk';
+  d.innerHTML = `<input type="checkbox"><span>${texto}</span>`;
+  const input = d.querySelector('input');
+  input.checked = memoria[clave] === undefined ? porDefecto : !!memoria[clave];
+  input.onchange = () => { memoria[clave] = input.checked; alCambiar(input.checked); };
+  $(destino).appendChild(d);
+  return input;
+}
+
+
+function clearScene(){
+  clearDims();
+  [...asm.children].forEach(o => {
+    o.removeFromParent();
+    if (o.isGridHelper) o.dispose(); else disposeTree(o);
+  });
+  grid = null; pin = null; holder = null; partMesh = null;
+  puntasIG = null; cimaIG = null;
+
+  for (const l of lineasDe.values()){ l.aristas.dispose(); l.borde.dispose(); }
+  lineasDe.clear();
+  piezas = [];
+  $('parts').innerHTML = '';
+  $('dimCtls').innerHTML = '';
+  destino = 'dimCtls';
+  $('devs').innerHTML = '';
+  $('err').classList.remove('show');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const PE_SEG = {
+  s: {ancho:10, dz: 3.5, agujero:4.7625, pieza:'tornillo'},
+  i: {ancho:10, dz:-3.5, agujero:4.7625, pieza:'tornillo'},
+  c: {ancho:20, dz: 0,   agujero:6.35,   pieza:'perno'},
+};
+
+
+
+const ACERO_TOR = 0x6e7681, ZINC = 0xb9c0c8;
+const TORNILLERIA = {
+  'tornillo-3-16x3-8':       {url:'assets/3d/tornillo-3-16x3-8.glb',       color:ACERO_TOR},
+  'tornillo-1-4x3-4':        {url:'assets/3d/tornillo-1-4x3-4.glb',        color:ACERO_TOR},
+  'perno-1-4x3-8':           {url:'assets/3d/perno-1-4x3-8.glb',           color:ACERO_TOR},
+  'perno-1-4x1-2':           {url:'assets/3d/perno-1-4x1-2.glb',           color:ACERO_TOR},
+  'perno-1-4x5-8':           {url:'assets/3d/perno-1-4x5-8.glb',           color:ACERO_TOR},
+  'perno-1-4x3-4':           {url:'assets/3d/perno-1-4x3-4.glb',           color:ACERO_TOR},
+  'tuerca-1-4':              {url:'assets/3d/tuerca-1-4.glb',              color:ACERO_TOR},
+
+
+
+
+
+  'arandela-presion-3-16':   {url:'assets/3d/arandela-presion-3-16.glb',   color:ZINC, aplastada:0.5},
+  'arandela-presion-1-4':    {url:'assets/3d/arandela-presion-1-4.glb',    color:ZINC, aplastada:0.5},
+  'arandela-plana-1-4-corta':{url:'assets/3d/arandela-plana-1-4-corta.glb',color:ZINC},
+  'arandela-plana-3-16-corta':{url:'assets/3d/arandela-plana-3-16-corta.glb',color:ZINC},
+};
+
+
+
+
+function cargarTornilleria(k){
+  const p = TORNILLERIA[k];
+  return loadPart(p.url).then(o => {
+    o.traverse(m => { if (m.isMesh) m.material = new THREE.MeshStandardMaterial(
+      {color:p.color, metalness:0.85, roughness:0.3}); });
+
+
+    if (p.aplastada){ o.scale.y *= p.aplastada; o.updateMatrixWorld(true); }
+    const c = new THREE.Box3().setFromObject(o);
+
+
+
+    return {o:o, y0:c.min.y, y1:c.max.y,
+            r:Math.max(c.max.x, c.max.z, -c.min.x, -c.min.z)};
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const PE_PILA = {
+  tornillo: {arandelas:['arandela-presion-3-16'],
+             pieza:'tornillo-3-16x3-8'},
+  perno:    {arandelas:['arandela-plana-1-4-corta', 'arandela-presion-1-4'],
+             pieza:'perno-1-4x1-2'},
+};
+
+
+
+const PE_DEFECTO = 'sis';
+
+function peCeldas(){
+  const txt = memoria.peLayout || PE_DEFECTO;
+  return [...txt].filter(c => PE_SEG[c]).map(c => PE_SEG[c]);
+}
+
+async function montarBarraPE(m, mia){
+  destino = 'dimCtls';
+  $('bPin').classList.remove('off');                                         
+
+  let tor;
+  try {
+    const pares = await Promise.all(Object.keys(TORNILLERIA).map(k =>
+      cargarTornilleria(k).then(p => [k, p])));
+    tor = Object.fromEntries(pares);
+  } catch (e){
+
+
+
+    if (mia === undefined || mia === epoca)
+      fail(e.message + '  ·  Ábrelo por http://localhost/, no con doble clic.');
+    return;
+  }
+  if (mia !== undefined && mia !== epoca) return;                 
+
+  const mat = new THREE.MeshStandardMaterial(
+    {color:m.color, metalness:0.55, roughness:0.42});
+  const celdas = peCeldas();
+  const delTablero = !!memoria.peLayout;
+
+
+
+  const rAla = Math.max(tor[PE_PILA.tornillo.pieza].r,
+    ...PE_PILA.tornillo.arandelas.map(n => tor[n].r));
+
+  holder = new THREE.Group();
+  asm.add(holder);
+  card({color:m.color, label:m.etiqueta});
+
+  const oPuente = filaInfo('Puente' + (delTablero ? '' : ' (sin tablero)'));
+  const oLargo  = filaInfo('Largo total');
+  const oTor    = filaInfo('Tornillos');
+  const sAla  = addSlider(m.ala.label,  m.ala.rango[0],  m.ala.rango[1],
+                          +(25 - 2 * (m.radio + 1.5)).toFixed(1), true, m.ala.clave);
+  const sAlto = addSlider(m.alto.label, m.alto.rango[0], m.alto.rango[1],
+                          ALTO_PE_DEFECTO, true, m.alto.clave);                             
+  const oDev = filaDev(m.etiqueta);
+
+  let malla = null;
+
+  function rehacer(){
+    let b;
+    try {
+      b = construirBarraPE({pata:+sAla.input.value, alto:+sAlto.input.value,
+                            radio:m.radio, celdas, radioPilaAla:rAla});
+    } catch (e){ return fail(e.message); }
+    $('err').classList.remove('show');
+
+    if (malla){ malla.removeFromParent(); malla.geometry.dispose(); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3));
+    g.setAttribute('normal',   new THREE.Float32BufferAttribute(b.nor, 3));
+    g.setIndex(b.idx);
+    malla = new THREE.Mesh(g, mat);
+    holder.add(malla);
+
+
+
+
+    partMesh = malla; piezas = [malla];
+
+
+
+
+
+
+
+
+
+
+
+    if (pin) pin.removeFromParent();
+    pin = new THREE.Group();
+    for (const a of b.agujeros){
+      const pila = PE_PILA[a.pieza] || PE_PILA.tornillo;
+      let y = a.y;
+      for (const n of pila.arandelas){
+        const pz = tor[n], ar = pz.o.clone();
+        ar.position.set(a.x, y - pz.y0, a.z);
+        pin.add(ar);
+        y += pz.y1 - pz.y0;
+      }
+      const f = tor[pila.pieza].o.clone();
+      f.position.set(a.x, y, a.z);
+      pin.add(f);
+    }
+    pin.visible = $('bPin').classList.contains('on');
+    holder.add(pin);
+
+
+    holder.position.set(-b.largo / 2, 0, 0);
+
+    sAla.out.textContent  = b.pata.toFixed(1) + ' mm';
+    sAlto.out.textContent = b.alto.toFixed(1) + ' mm';
+    oPuente.textContent   = b.puente.toFixed(1) + ' mm';
+    oLargo.textContent    = b.largo.toFixed(1) + ' mm';
+    oTor.textContent      = b.agujeros.length + ' · ' + celdas.length + ' segmentos';
+
+
+    oDev.textContent      = b.desarrollo.toFixed(1) + ' mm';
+
+    dimScale = Math.max(8, (m.escalaCotas || 0.6) * Math.max(b.largo, 20));
+    cotasBarraPE(b);
+  }
+
+  function cotasBarraPE(b){
+    clearDims();
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    const hw = b.ancho / 2, x0 = b.xPuente, x1 = x0 + b.puente;
+    const ARRIBA = V(0, 1, 0), ATRAS = V(0, 0, -1), IZQ = V(-1, 0, 0);
+    const g = new THREE.Group();
+
+
+    g.add(makeDim(V(x0, b.alto, hw), V(x1, b.alto, hw), ARRIBA,
+                  dimScale * 0.45, 'puente', b.puente, true));
+    g.add(makeDim(V(0, 0, -hw), V(b.pata, 0, -hw), ATRAS,
+                  dimScale * 0.30, 'ala', b.pata));
+    g.add(makeDim(V(b.largo - b.pata, 0, -hw), V(b.largo, 0, -hw), ATRAS,
+                  dimScale * 0.30, 'ala', b.pata));
+    g.add(makeDim(V(0, 0, -hw), V(b.largo, 0, -hw), ATRAS,
+                  dimScale * 0.70, 'largo', b.largo));
+    g.add(makeDim(V(0, 0, -hw), V(0, b.alto, -hw), IZQ,
+                  dimScale * 0.30, 'alto', b.alto));
+    holder.add(g);
+    dims = g;
+    setDimsVisible($('bCota').classList.contains('on'));
+  }
+
+  sAla.input.oninput  = () => { memoria.alaPE  = +sAla.input.value;  rehacer(); };
+  sAlto.input.oninput = () => { memoria.altoPE = +sAlto.input.value; rehacer(); };
+
+  rehacer();
+  frame();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const N_EXT = 30, N_ANCHO = 20, N_ESP = 3, N_AIS_DIAM = 30;
+
+function nCeldas(){
+  const txt = memoria.nLayout || PE_DEFECTO;
+  return [...txt].filter(c => PE_SEG[c]).map(c => PE_SEG[c]);
+}
+
+async function montarBarraN(m, mia){
+  destino = 'dimCtls';
+  $('bPin').classList.remove('off');
+  let tor, herr;
+  try {
+    const nombres = Object.keys(TORNILLERIA);
+    const pares = await Promise.all(nombres.map(k => cargarTornilleria(k).then(p => [k, p])));
+    tor = Object.fromEntries(pares);
+    herr = {plana:tor['arandela-plana-1-4-corta'], ara:tor['arandela-presion-1-4'],
+            tor:tor['perno-1-4x1-2']};
+  } catch (e){
+    if (mia === undefined || mia === epoca)
+      fail(e.message + '  ·  Ábrelo por http://localhost/, no con doble clic.');
+    return;
+  }
+  if (mia !== undefined && mia !== epoca) return;
+
+  const matBarra = new THREE.MeshStandardMaterial({color:m.color, metalness:0.55, roughness:0.42});
+  const matAis = new THREE.MeshStandardMaterial({color:AIS_COLOR, metalness:0.15, roughness:0.65});
+  const celdas = nCeldas();
+  const delTablero = !!memoria.nLayout;
+
+  holder = new THREE.Group();
+  asm.add(holder);
+  card({color:m.color, label:m.etiqueta});
+  card({color:AIS_COLOR, label:'Aislador 0.5/400 (Ø' + N_AIS_DIAM + ')'});
+
+  const oLargo = filaInfo('Largo total' + (delTablero ? '' : ' (sin tablero)'));
+  const oTor   = filaInfo('Tornillos');
+  const sAis = addSlider(m.aislador.label, m.aislador.rango[0], m.aislador.rango[1],
+                         30, true, m.aislador.clave);
+  const oDev = filaDev(m.etiqueta);
+
+  let grupo = null;
+
+  function rehacer(){
+    const H = +sAis.input.value;
+    if (grupo){
+      grupo.removeFromParent();
+      grupo.traverse(o => { if (o.isMesh && (o.material === matBarra || o.material === matAis)) o.geometry.dispose(); });
+    }
+    grupo = new THREE.Group();
+    holder.add(grupo);
+
+
+    let L = 2 * N_EXT;
+    for (const c of celdas) L += c.ancho;
+    const ags = [{x:N_EXT / 2, z:0, r:6.35 / 2, punta:true},
+                 {x:L - N_EXT / 2, z:0, r:6.35 / 2, punta:true}];
+    let x = N_EXT;
+    for (const c of celdas){
+      ags.push({x:x + c.ancho / 2, z:c.dz, r:c.agujero / 2, celda:c});
+      x += c.ancho;
+    }
+
+
+
+    const sh = new THREE.Shape();
+    sh.moveTo(0, -N_ANCHO / 2); sh.lineTo(L, -N_ANCHO / 2);
+    sh.lineTo(L, N_ANCHO / 2); sh.lineTo(0, N_ANCHO / 2); sh.closePath();
+    for (const a of ags) agujeroEn(sh, a.x, -a.z, a.r);
+    const barra = new THREE.Mesh(new THREE.ExtrudeGeometry(sh,
+      {depth:N_ESP, bevelEnabled:false, curveSegments:24}), matBarra);
+    barra.rotation.x = -Math.PI / 2;
+    barra.position.y = H;
+    grupo.add(barra);
+
+
+    const aisl = [];
+    for (const a of ags.filter(g => g.punta)){
+      const sc = new THREE.Shape();
+      sc.absarc(a.x, 0, N_AIS_DIAM / 2, 0, Math.PI * 2, false);
+      agujeroEn(sc, a.x, 0, a.r);
+      const ai = new THREE.Mesh(new THREE.ExtrudeGeometry(sc,
+        {depth:H, bevelEnabled:false, curveSegments:32}), matAis);
+      ai.rotation.x = -Math.PI / 2;
+      grupo.add(ai);
+      aisl.push(ai);
+    }
+    partMesh = barra; piezas = [barra].concat(aisl);
+
+
+
+    if (pin) pin.removeFromParent();
+    pin = new THREE.Group();
+    for (const a of ags){
+      if (a.punta){
+        const arriba = new THREE.Group();
+        apilar(arriba, herr, 0, 0, 0);
+        arriba.position.set(a.x, H + N_ESP, 0);
+        pin.add(arriba);
+        const abajo = new THREE.Group();
+        apilar(abajo, herr, 0, 0, 0);
+        abajo.rotation.x = Math.PI;                                
+        abajo.position.set(a.x, 0, 0);
+        pin.add(abajo);
+        continue;
+      }
+      const pila = PE_PILA[a.celda.pieza] || PE_PILA.tornillo;
+      let y = H + N_ESP;
+      for (const n of pila.arandelas){
+        const pz = tor[n], ar = pz.o.clone();
+        ar.position.set(a.x, y - pz.y0, a.z);
+        pin.add(ar);
+        y += pz.y1 - pz.y0;
+      }
+      const f = tor[pila.pieza].o.clone();
+      f.position.set(a.x, y, a.z);
+      pin.add(f);
+    }
+    pin.visible = $('bPin').classList.contains('on');
+    holder.add(pin);
+
+    holder.position.set(-L / 2, 0, 0);
+    sAis.out.textContent = H.toFixed(1) + ' mm';
+    oLargo.textContent = L.toFixed(1) + ' mm';
+    oTor.textContent = celdas.length + ' en la barra · 4 pernos de aislador (2 arriba, 2 abajo)';
+    oDev.textContent = L.toFixed(1) + ' mm';
+
+    dimScale = Math.max(8, (m.escalaCotas || 0.6) * Math.max(L, 20));
+    cotas(L, H);
+  }
+
+  function cotas(L, H){
+    clearDims();
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    const hw = N_ANCHO / 2, yT = H + N_ESP;
+    const g = new THREE.Group();
+    g.add(makeDim(V(0, yT, -hw), V(L, yT, -hw), V(0, 0, -1),
+                  dimScale * 0.45, 'largo', L, true));
+    g.add(makeDim(V(L, yT, -hw), V(L, yT, hw), V(1, 0, 0),
+                  dimScale * 0.25, 'ancho', N_ANCHO));
+    g.add(makeDim(V(-N_AIS_DIAM / 2 + N_EXT / 2, 0, 0), V(-N_AIS_DIAM / 2 + N_EXT / 2, H, 0), V(-1, 0, 0),
+                  dimScale * 0.30, 'aislador', H));
+    holder.add(g);
+    dims = g;
+    setDimsVisible($('bCota').classList.contains('on'));
+  }
+
+  sAis.input.oninput = () => { memoria[m.aislador.clave] = +sAis.input.value; rehacer(); };
+  rehacer();
+  frame();
+}
+
+
+
+
+
+
+
+
+
+
+
+const BF_DEFECTO = {
+  fases:['R', 'S', 'T'], largo:300, sep:50,
+  agujeros:[{desdeArriba:14.0, diam:8.42, rol:'a'},
+            {desdeArriba:286.0, diam:8.42, rol:'a'}],
+  ais:{tipo:'b', ancho:130, alto:28, left:-15, filas:[0, 272]},
+};
+
+
+
+const AIS_COLOR = 0x8b0000, AIS_RADIO = 5;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AIS_3F = {largo:130, ancho:28, asiento:11.5, radio:5,
+                paso:51, agujero:6, fijacion:27,
+                rebaje:{diam:13.5, hondo:7},
+                cajaFij:{diam:10.5, hondo:6},
+                nervios:{a:4, b:23, radio:1.5, alto:4, desdeFij:8}};
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AIS_4F = {largo:143, ancho:29, asiento:11.5, radio:5,
+                paso:33.5, agujero:6, fijacion:31.91,
+                rebaje:{diam:13.5, hondo:7},
+                cajaFij:{diam:10.5, hondo:6},
+                nervios:null};
+
+
+
+
+
+
+function geometriaCatalogo(f, nBarras){
+  const agujeros = [];
+  for (let i = 0; i < nBarras; i++)
+    agujeros.push({x:(i - (nBarras - 1) / 2) * f.paso, y:0, r:f.agujero / 2,
+                   base:f.rebaje, cima:null});
+  for (const sg of [-1, 1])
+    agujeros.push({x:sg * f.fijacion, y:0, r:f.agujero / 2, base:null, cima:f.cajaFij});
+  const nervios = [];
+  if (f.nervios) for (const sg of [-1, 1]) for (const d of [-1, 1])
+    nervios.push({x:sg * f.fijacion + d * f.nervios.desdeFij, y:0,
+                  a:f.nervios.a, b:f.nervios.b, radio:f.nervios.radio, alto:f.nervios.alto});
+  return construirAisladorBase(THREE, {
+    x0:-f.largo / 2, y0:-f.ancho / 2, largo:f.largo, ancho:f.ancho, fondo:f.asiento,
+    radio:f.radio, agujeros, nervios, segmentos:24}).geo;
+}
+
+
+
+const fichaCatalogo = nBarras =>
+  (nBarras === 3) ? AIS_3F : (nBarras === 4) ? AIS_4F : null;
+
+function agujeroEn(sh, cx, cy, r){
+  const h = new THREE.Path();
+  h.absarc(cx, cy, r, 0, Math.PI * 2, true);
+  sh.holes.push(h);
+}
+
+
+
+
+function mallaAislador(ais, L, sep, nBarras, agsA, fondo, mat, pieza){
+  const g = new THREE.Group();
+  const opt = {depth:fondo, bevelEnabled:false, curveSegments:24};
+  const filas = Math.min(ais.filas.length, agsA.length);
+
+
+
+  if (pieza){
+    const geo = geometriaCatalogo(pieza, nBarras);
+    for (let k = 0; k < filas; k++){
+      const c = new THREE.Mesh(geo, mat);
+      c.position.set((nBarras - 1) * sep / 2, L - agsA[k].desdeArriba, 0);
+      g.add(c);
+    }
+    g.position.z = -fondo;
+    return g;
+  }
+  for (let k = 0; k < filas; k++){
+    const cy = L - agsA[k].desdeArriba, rAg = agsA[k].r;
+    if (ais.tipo === 'b'){
+
+
+
+
+
+
+
+      const fij = (nBarras === 4) ? AIS_4F.fijacion : 0;
+      const cxP = ais.left + ais.ancho / 2;
+      const agujeros = [];
+      for (let i = 0; i < nBarras; i++)
+        agujeros.push({x:i * sep, y:cy, r:rAg, base:AIS_3F.rebaje, cima:null});
+      if (fij) for (const sg of [-1, 1])
+        agujeros.push({x:cxP + sg * fij, y:cy, r:rAg, base:null, cima:AIS_3F.cajaFij});
+      const bloque = construirAisladorBase(THREE, {
+        x0:ais.left, y0:L - ais.filas[k] - ais.alto, largo:ais.ancho, ancho:ais.alto,
+        fondo, radio:AIS_RADIO, agujeros, segmentos:opt.curveSegments});
+      g.add(new THREE.Mesh(bloque.geo, mat));
+    } else {
+      for (let i = 0; i < nBarras; i++){
+        const sh = new THREE.Shape();
+        sh.absarc(i * sep, cy, ais.diam / 2, 0, Math.PI * 2, false);
+        agujeroEn(sh, i * sep, cy, rAg);
+        g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(sh, opt), mat));
+      }
+    }
+  }
+  g.position.z = -fondo;
+  return g;
+}
+
+async function montarBarrasFase(m, mia){
+  destino = "dimCtls";
+
+  const d = memoria.bfBarras || BF_DEFECTO;
+  const delTablero = !!memoria.bfBarras;
+
+
+
+
+  const con = await plantillasConector(d, mia);
+  if (mia !== undefined && mia !== epoca) return;
+
+  holder = new THREE.Group();
+  asm.add(holder);
+
+
+
+
+
+  holder.rotation.x = -Math.PI / 2;
+
+
+
+
+
+
+
+
+
+
+  const cfgEsc = m.escalon, aisEsc = d.ais;
+  let esc = null, avisoEsc = null;
+  if (cfgEsc && aisEsc && memoria[cfgEsc.clave]){
+    const pie = memoria[cfgEsc.pie.clave] ?? cfgEsc.pie.defecto;
+    const filas = aisEsc.filas.slice().sort((p, q) => p - q);
+
+
+
+
+
+
+    const dosR = 2 * (m.espesor + m.espesor / 2);                                   
+    const cAg = d.agujeros.filter(a => a.rol === "c");
+    const minHasta = cAg.length
+      ? Math.max(...cAg.map(a => a.desdeArriba + a.diam / 2)) + dosR + 0.5 : 0;
+    const pedido = filas[0] - pie;
+    esc = {hasta: Math.max(pedido, minHasta),
+           alto: memoria[cfgEsc.alto.clave] ?? cfgEsc.alto.defecto,
+           radio: m.espesor, invade: Math.max(0, minHasta - pedido)};
+  }
+  const barraDe = ags => {
+    const recta = {largo:d.largo, ancho:m.ancho, espesor:m.espesor, agujeros:ags};
+    if (!esc) return construirBarraFase(recta);
+    try {
+      return construirBarraEscalonada(Object.assign({escalon:esc}, recta));
+    } catch (e){
+      avisoEsc = avisoEsc || e.message;
+      return construirBarraFase(recta);
+    }
+  };
+
+
+
+  const desf = desfaseColumna(d, con);
+  const barras = [];
+  barrasPorFase = [];
+  let b = null;
+  try {
+    d.fases.forEach((f, i) => {
+      const corr = desf.has(f) ? desf.get(f).agujero : 0;
+      const ags = d.agujeros.concat(con.filasDe(f).map(q => (
+        {desdeArriba:q.eje, diam:q.diam, rol:"t", desvio:corr})));
+      const bf = barraDe(ags);
+      barrasPorFase.push({f, i, bf});
+      if (!b) b = bf;
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(bf.pos, 3));
+      geo.setAttribute("normal",   new THREE.Float32BufferAttribute(bf.nor, 3));
+      geo.setIndex(bf.idx);
+      const col = (m.colores[f] !== undefined) ? m.colores[f] : 0xcccccc;
+      const malla = new THREE.Mesh(geo, new THREE.MeshStandardMaterial(
+        {color:col, metalness:0.55, roughness:0.42}));
+      malla.position.x = i * d.sep;
+
+
+
+
+
+
+
+
+
+
+      const filete = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20),
+        new THREE.LineBasicMaterial({color:0x16202e, transparent:true, opacity:0.75}));
+      filete.userData.esLinea = true;
+      malla.add(filete);
+      holder.add(malla);
+      barras.push(malla);
+      card({color:col, label:"Barra " + f});
+    });
+  } catch (e){ return fail(e.message); }
+
+  partMesh = barras[0];
+
+
+
+
+  const colocar = fondo => holder.position.set(
+    -((d.fases.length - 1) * d.sep) / 2, fondo, b.largo / 2);
+
+
+
+
+  const agsA = b.agujeros.filter(a => a.rol === "a")
+    .sort((x, y) => x.desdeArriba - y.desdeArriba);
+  const ais = (d.ais && agsA.length) ? d.ais : null;
+
+  filaInfo("Sección").textContent = m.ancho + " × " + m.espesor + " mm";
+  filaInfo("Largo" + (delTablero ? "" : " (sin tablero)")).textContent =
+    b.largo.toFixed(1) + " mm";
+  if (d.fases.length > 1)
+    filaInfo("Separación").textContent = d.sep.toFixed(1) + " mm";
+  const nC = b.agujeros.filter(a => a.rol === "c").length;
+  const nT = b.agujeros.filter(a => a.rol === "t").length;
+  const trozos = [];
+  if (nC) trozos.push(nC + " de empalme");
+  if (agsA.length) trozos.push(agsA.length + " de aislador");
+  if (nT) trozos.push(nT + " de conector");
+  filaInfo("Perforaciones").textContent = trozos.join(" + ");
+  const oCon = (d.conectores && d.conectores.length)
+    ? filaInfo("Conectores") : null;
+  if (ais)
+    filaInfo("Aislador").textContent = (ais.tipo === "b"
+      ? (ais.ancho.toFixed(0) + " × " + ais.alto.toFixed(0) + " mm")
+      : ("Ø " + ais.diam.toFixed(0) + " mm")) + " · " + ais.filas.length + " filas";
+
+
+
+
+
+
+  const desarrollo = b.desarrollo || b.largo;
+  filaDev(m.etiqueta + (b.escalon ? " · con escalón" : "")).textContent =
+    desarrollo.toFixed(1) + " mm";
+  if (d.fases.length > 1)
+    filaDev("Total (" + d.fases.length + " barras)", "tot").textContent =
+      (desarrollo * d.fases.length).toFixed(1) + " mm";
+
+  dimScale = Math.max(8, (m.escalaCotas || 0.6) * Math.max(b.largo, 20));
+
+
+
+
+
+  if (cfgEsc && aisEsc){
+    addCheck(cfgEsc.casilla, cfgEsc.clave, () => remontar(), false);
+    if (esc){
+      for (const c of [cfgEsc.alto, cfgEsc.pie]){
+        const sl = addSlider(c.label, c.rango[0], c.rango[1], c.defecto, true, c.clave);
+        sl.out.textContent = (+sl.input.value).toFixed(1) + " mm";
+        sl.input.oninput = () => {
+          memoria[c.clave] = +sl.input.value;
+          sl.out.textContent = (+sl.input.value).toFixed(1) + " mm";
+        };
+        sl.input.onchange = () => remontar();
+      }
+      const e = b.escalon;
+      if (e)
+        filaInfo("Escalón").textContent = "la punta al IG sube " + e.alto.toFixed(1) +
+          " mm · el pliegue acaba a " + e.hasta.toFixed(1) +
+          " del borde de arriba · radio interior " + e.radio +
+          (esc.invade > 0.05
+            ? " · entra " + esc.invade.toFixed(1) + " mm sobre el aislador, que la extensión no da para el agujero y el pliegue"
+            : ", sobre el aislador");
+      if (avisoEsc) filaInfo("Aviso escalón").textContent = avisoEsc + " · la barra sale recta";
+    }
+  }
+
+  if (!ais){                                                          
+    colocar(0);
+    piezas = barras;
+    cotasBarrasFase(b, d, m, null, 0);
+    ponerConectores(d, b, con, oCon);
+    await ponerConectorAlIG(d, b, mia,
+                            () => cotasBarrasFase(b, d, m, null, 0));
+    frame();
+    return;
+  }
+
+  card({color:AIS_COLOR, label:"Aislador"});
+  const matAis = new THREE.MeshStandardMaterial(
+    {color:AIS_COLOR, metalness:0.15, roughness:0.65});
+
+
+
+
+  const catAis = (ais.tipo === "b") ? fichaCatalogo(d.fases.length) : null;
+  const piezaAis = catAis;
+
+
+
+
+
+  const esBase = (ais.tipo === "b");
+  const sFondo = esBase ? null
+    : addSlider(m.fondo.label, m.fondo.rango[0], m.fondo.rango[1],
+                30, true, m.fondo.clave);
+  const fondoDe = () => esBase ? AIS_3F.asiento : +sFondo.input.value;
+  if (esBase){
+    filaInfo("Fondo del aislador").textContent =
+      AIS_3F.asiento.toFixed(1) + " mm al asiento · " +
+      (piezaAis ? "de catálogo" : "el del base, fijo");
+  }
+  if (piezaAis){
+
+
+
+    const des = Math.abs(d.sep - catAis.paso);
+    if (des > 0.05)
+      filaInfo("Aviso aislador").textContent = "sus asientos van a " +
+        catAis.paso + " mm y las barras a " + d.sep.toFixed(1) +
+        ": los agujeros de los extremos quedan " + des.toFixed(1) + " mm fuera de eje";
+  }
+
+
+
+
+
+
+
+  let herrAis = null, herrBase = null;
+  if (ais.tipo === "b"){
+
+
+
+
+    try {
+      const [tor, plana, ara, tuerca] = await Promise.all([
+        cargarTornilleria("tornillo-1-4x3-4"),
+        cargarTornilleria("arandela-plana-1-4-corta"),
+        cargarTornilleria("arandela-presion-1-4"),
+        cargarTornilleria("tuerca-1-4"),
+      ]);
+      herrBase = {tor, plana, ara, tuerca};
+    } catch (e){
+      if (mia === undefined || mia === epoca)
+        fail(e.message + "  ·  Ábrelo por http://localhost/, no con doble clic.");
+      return;
+    }
+    if (mia !== undefined && mia !== epoca) return;
+    const nT = agsA.length * d.fases.length;
+    filaInfo("Tornillos de aislador").textContent = nT +
+      " phillips de 1/4\" × 3/4\" por debajo · plana + presión + tuerca arriba";
+
+
+    if (piezaAis){
+      const rb = catAis.rebaje, cab = 2 * herrBase.tor.r, hCab = herrBase.tor.y1;
+      const avisos = [];
+      if (cab > rb.diam - 0.2)
+        avisos.push("la cabeza Ø" + cab.toFixed(1) + " no entra en el rebaje Ø" + rb.diam);
+      if (hCab > rb.hondo)
+        avisos.push("la cabeza de " + hCab.toFixed(1) + " asoma del rebaje de " + rb.hondo);
+      if (6.35 > catAis.agujero + 0.05)
+        avisos.push("la caña de 6.35 no pasa por el agujero Ø" + catAis.agujero +
+                    " de la pieza: hay que taladrarlo a 6.5");
+      if (avisos.length) filaInfo("Aviso tornillo").textContent = avisos.join(" · ");
+    }
+  } else {
+    try {
+      const [plana, ara, tor] = await Promise.all([
+        cargarTornilleria("arandela-plana-1-4-corta"),
+        cargarTornilleria("arandela-presion-1-4"),
+        cargarTornilleria("perno-1-4x1-2"),
+      ]);
+      herrAis = {plana, ara, tor};
+    } catch (e){
+      if (mia === undefined || mia === epoca)
+        fail(e.message + "  ·  Ábrelo por http://localhost/, no con doble clic.");
+      return;
+    }
+    if (mia !== undefined && mia !== epoca) return;
+    const nPernos = agsA.length * d.fases.length;
+    filaInfo("Pernos de aislador").textContent = (2 * nPernos) +
+      " de 1/4\" × 1/2\" (" + nPernos + " arriba, " + nPernos + " abajo) · plana + presión";
+  }
+
+  let grupoAis = null, gAis = null, igCtl = null;
+
+  function rehacerAislador(){
+    const fondo = fondoDe();
+    if (grupoAis){
+      grupoAis.removeFromParent();
+      grupoAis.traverse(o => { if (o.isMesh) o.geometry.dispose(); });
+    }
+    grupoAis = mallaAislador(ais, b.largo, d.sep, d.fases.length,
+                             agsA, fondo, matAis, piezaAis);
+    holder.add(grupoAis);
+
+
+    if (gAis){ gAis.removeFromParent(); gAis = null; }
+    if (herrAis || herrBase){
+      if (!pin){ pin = new THREE.Group(); holder.add(pin); }
+      gAis = herrBase ? tornillosAisladorBase(herrBase, agsA, b, d, catAis || AIS_3F, fondo)
+                      : pernosAislador(herrAis, agsA, b, d, fondo);
+      pin.add(gAis);
+      pin.visible = $("bPin").classList.contains("on");
+      $("bPin").classList.remove("off");
+    }
+    piezas = barras.concat([grupoAis]);
+    colocar(fondo);
+    if (sFondo) sFondo.out.textContent = fondo.toFixed(1) + " mm";
+
+
+    if (igCtl) igCtl.rehacer();
+    else cotasBarrasFase(b, d, m, ais, fondo, catAis);
+  }
+
+  const rehacerAisAlCuadro = porCuadro(rehacerAislador);
+  if (sFondo) sFondo.input.oninput = () => {
+    memoria[m.fondo.clave] = +sFondo.input.value;
+    rehacerAisAlCuadro();
+  };
+
+  rehacerAislador();
+  ponerConectores(d, b, con, oCon);
+  igCtl = await ponerConectorAlIG(d, b, mia,
+    () => cotasBarrasFase(b, d, m, ais, fondoDe(), catAis)) || null;
+  frame();
+}
+
+
+
+
+
+
+
+const PERNO_CONECTOR = 4.7625;
+
+
+const PERNO_CONECTOR_M1 = 6.35;
+
+
+
+const HERRAJE_CONECTOR = {
+  '':   {ara:'arandela-presion-3-16', tor:'tornillo-3-16x3-8', plana:'arandela-plana-3-16-corta'},
+  'M1': {ara:'arandela-presion-1-4',  tor:'perno-1-4x1-2',     plana:'arandela-plana-1-4-corta'}
+};
+
+const idConector = (porFase, c) =>
+  porFase[c.fase] ? (porFase[c.fase] + (c.tipo === 'm1' ? '-m1' : '')) : null;
+const canaDe = c => (c.tipo === 'm1') ? PERNO_CONECTOR_M1 : PERNO_CONECTOR;
+
+
+
+
+async function plantillasConector(d, mia){
+  const lista = d.conectores || [];
+
+
+  const rieles = lista.filter(c => c.tipo === "r" || c.tipo === "m1");
+  const vacio = {plant:{}, porFase:{}, ids:[], rieles:[],
+                 sinModelo: lista.length - rieles.length,
+                 idDe: () => null,
+                 filasDe: () => []};
+  if (!rieles.length) return vacio;
+
+
+
+
+
+
+
+  const porNombre = {};
+  for (const e of SISTEMAS[_iSis].modelos)
+    for (const f of (e.cubre || [])) porNombre[f] = e.id;
+  const canon = (d.fases.length === 4) ? ['R', 'S', 'T', 'N'] : ['R', 'S', 'T'];
+  const porFase = {};
+  if (d.fases.length === canon.length)
+    d.fases.forEach((f, i) => { if (porNombre[canon[i]]) porFase[f] = porNombre[canon[i]]; });
+  else Object.assign(porFase, porNombre);
+
+
+
+  const ids = [];
+  for (const c of rieles){
+    const id = idConector(porFase, c);
+    if (id && ids.indexOf(id) === -1) ids.push(id);
+  }
+
+
+
+
+
+  const plant = {};
+  try {
+    const herrDe = {};
+    for (const fam of ['', 'M1']){
+      if (!ids.some(id => (fam === 'M1') === /-m1$/.test(id))) continue;
+      const H = HERRAJE_CONECTOR[fam];
+      const [ara, tor, plana] = await Promise.all([
+        cargarTornilleria(H.ara), cargarTornilleria(H.tor), cargarTornilleria(H.plana),
+      ]);
+      if (mia !== undefined && mia !== epoca) return vacio;
+      herrDe[fam] = {ara, tor, plana};
+    }
+    for (const id of ids){
+      plant[id] = await armarConector(porId(id), herrDe[/-m1$/.test(id) ? 'M1' : '']);
+      if (mia !== undefined && mia !== epoca) return vacio;
+    }
+  } catch (e){
+    fail(e.message + '  ·  Ábrelo por http://localhost/, no con doble clic.');
+    return vacio;
+  }
+
+  const idDe = c => idConector(porFase, c);
+  return {plant, porFase, ids, rieles,
+          sinModelo: lista.length - rieles.length,
+          idDe,
+
+
+          filasDe: f => rieles.filter(c => c.fase === f && plant[idDe(c)])
+                              .map(c => ({eje: c.eje, diam: canaDe(c)}))};
+}
+
+
+
+
+
+
+
+
+const CANA_PIE = window.Columna.CANA_PIE;                  
+const TOPE_AGUJERO = window.Columna.TOPE_AGUJERO;     
+
+
+function holguraPie(plant){
+  const pie = plant.userData.pie;
+  if (!pie) return 0;
+  const largo = (typeof pie.largo === "number") ? pie.largo : pie.paso;
+  return Math.max(0, (largo - CANA_PIE) / 2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function desfaseColumna(d, con){
+
+
+
+
+
+
+
+
+  const piezas = d.fases.map(f => {
+    const c = con.rieles.filter(q => q.fase === f)[0];
+    return c ? (con.plant[con.idDe(c)] || null) : null;
+  });
+  const rep = window.Columna.reparto(
+    piezas.map(pl => pl ? pl.userData.alcance : 0), d.sep,
+    piezas.map(pl => pl ? holguraPie(pl) : 0));
+  const m = new Map();
+  d.fases.forEach((f, i) => { if (piezas[i]) m.set(f, rep[i]); });
+  return m;
+}
+
+
+
+
+
+
+
+
+
+function ponerConectores(d, b, con, salida){
+  const nota = n => (con.sinModelo
+    ? (n + " con pieza · " + con.sinModelo + " sin modelo")
+    : (n + " sobre las barras"));
+  if (!con.rieles.length){ if (salida) salida.textContent = nota(0); return; }
+
+
+
+
+
+
+
+  const desf = desfaseColumna(d, con);
+
+  if (!pin){ pin = new THREE.Group(); holder.add(pin); }
+  let puestos = 0;
+  for (const c of con.rieles){
+    const pl = con.plant[con.idDe(c)];
+    const i = d.fases.indexOf(c.fase);
+    if (!pl || i < 0 || !desf.has(c.fase)) continue;
+    const q = desf.get(c.fase);
+
+    const yEje = b.largo - c.eje;
+    const puesto = plantarConector(pl, i * d.sep + q.agujero, yEje,
+                                   b.espesor + alzada(b, yEje), q.lado, q.ranura);
+    holder.add(puesto.cobre);
+    if (puesto.herraje) pin.add(puesto.herraje);
+    puestos++;
+  }
+
+  if (pin.children.length){
+    pin.visible = $("bPin").classList.contains("on");
+    $("bPin").classList.remove("off");                                     
+  }
+
+  for (const id of con.ids)
+    if (con.plant[id]) card({color:porId(id).edit.color, label:porId(id).label});
+  if (salida) salida.textContent = nota(puestos);
+
+  if (desf.size){
+    const fases = [...desf.keys()];
+
+    const num = v => (Math.abs(v) < 0.05) ? "0.0"
+                                         : ((v > 0 ? "+" : "") + v.toFixed(1));
+    const fila = campo => fases.map(f => f + " " + num(desf.get(f)[campo])).join(" · ");
+    filaInfo("A la columna").textContent = fila("falta") + " mm";
+    if (fases.some(f => Math.abs(desf.get(f).agujero) >= 0.05))
+      filaInfo("Agujero corrido").textContent =
+        fila("agujero") + " mm · tope ±" + TOPE_AGUJERO.toFixed(1);
+    const fuera = fases.filter(f => Math.abs(desf.get(f).sobra) > 0.05);
+    if (fuera.length){
+      const h = desf.get(fuera[0]).h;
+      filaInfo("Aviso columna").textContent =
+        fuera.map(f => f + " " + Math.abs(desf.get(f).sobra).toFixed(1)).join(" · ") +
+        " mm sin llegar: el agujero da ±" + TOPE_AGUJERO.toFixed(1) +
+        " y la ranura ±" + h.toFixed(1);
+    }
+  }
+}
+
+function cotasBarrasFase(b, d, m, ais, fondo, pieza){
+  clearDims();
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const hw = b.ancho / 2, t = b.espesor, L = b.largo;
+  const IZQ = V(-1, 0, 0), DER = V(1, 0, 0), ABAJO = V(0, -1, 0);
+  const g = new THREE.Group();
+
+
+
+  g.add(makeDim(V(-hw, 0, 0), V(-hw, L, 0), IZQ,
+                dimScale * 0.55, "largo", L, true));
+
+
+
+
+
+  const dimT = Math.max(6, 0.35 * Math.max(d.sep, b.ancho), 0.07 * L);
+  g.add(makeDim(V(-hw, 0, 0), V(hw, 0, 0), ABAJO,
+                dimT * 0.90, "ancho", b.ancho));
+
+
+  if (b.escalon){
+    const e = b.escalon, xE = -hw, yE = e.sube ? e.sube[1] : e.baja[0];
+    g.add(makeDim(V(xE, yE, t), V(xE, yE, t + e.alto), IZQ,
+                  dimT * 0.90, "escalón", e.alto));
+  }
+  if (d.fases.length > 1)
+    g.add(makeDim(V(0, 0, 0), V(d.sep, 0, 0), ABAJO,
+                  dimT * 2.10, "sep", d.sep));
+
+
+
+
+
+
+
+
+
+  const ags = b.agujeros.filter(a => a.rol !== "t")
+    .sort((p, q) => p.desdeArriba - q.desdeArriba);
+  const offCad = i => dimScale * (i % 2 ? 0.52 : 0.30);
+  let yAnt = L, i = 0;
+  for (const a of ags){
+    g.add(makeDim(V(hw, yAnt, 0), V(hw, a.y, 0), DER, offCad(i),
+                  i === 0 ? "arriba" : "eje", yAnt - a.y));
+    yAnt = a.y; i++;
+  }
+  if (yAnt > 0)
+    g.add(makeDim(V(hw, yAnt, 0), V(hw, 0, 0), DER, offCad(i), "abajo", yAnt));
+
+
+
+
+  const ARR = V(0, 1, 0);
+  for (const {i: ib, bf} of barrasPorFase){
+    const tAg = bf.agujeros.filter(a => a.rol === "t" && Math.abs(a.x) >= 0.05)
+      .sort((p, q) => q.y - p.y)[0];
+    if (!tAg) continue;
+    const x0 = ib * d.sep;
+    g.add(makeDim(V(x0, tAg.y, t), V(x0 + tAg.x, tAg.y, t), ARR,
+                  dimScale * 0.12, "desvío", Math.abs(tAg.x)));
+  }
+
+
+
+
+  const COTAS_AISLADOR = false;
+
+
+
+
+  if (COTAS_AISLADOR && ais && fondo > 0){
+    const xd = (ais.tipo === "b") ? (ais.left + ais.ancho)
+                                  : ((d.fases.length - 1) * d.sep + ais.diam / 2);
+    const yf = L - ais.filas[0] - (ais.tipo === "b" ? ais.alto : ais.diam);
+
+
+    const kF = Math.max(6, ((ais.tipo === "b") ? ais.ancho : ais.diam) * 0.075);
+    g.add(makeDim(V(xd, yf, -fondo), V(xd, yf, 0), DER, kF, "fondo", fondo));
+  }
+
+
+
+
+
+
+
+
+  if (COTAS_AISLADOR && ais && ais.tipo === "b" && !pieza){
+
+
+
+
+    const n = d.fases.length;
+    const agsB = b.agujeros.filter(a => a.rol === "a")
+      .sort((p, q) => p.desdeArriba - q.desdeArriba);
+    const x0 = ais.left, x1 = ais.left + ais.ancho;
+    const yTop = L - ais.filas[0], yBot = yTop - ais.alto;
+    const kB = ais.ancho * 0.075, ARRIBA = V(0, 1, 0);
+    g.add(makeDim(V(x0, yBot, 0), V(x1, yBot, 0), ABAJO,
+                  kB * 1.00, "ancho ais", ais.ancho));
+    g.add(makeDim(V(x0, yBot, 0), V(x0, yTop, 0), IZQ,
+                  kB * 1.00, "alto ais", ais.alto));
+    for (let i = 0; i + 1 < n; i++)
+      g.add(makeDim(V(i * d.sep, yTop, 0), V((i + 1) * d.sep, yTop, 0), ARRIBA,
+                    kB * 0.80, "paso ais", d.sep));
+
+
+
+    if (agsB.length){
+      const yAg = L - agsB[0].desdeArriba, dAg = (2 * agsB[0].r).toFixed(2);
+      const rb = AIS_3F.rebaje, cj = AIS_3F.cajaFij;
+      g.add(makeNota(V((n - 1) * d.sep, yAg, 0), V(1, 1, 0),
+                     kB * 3.20, "ø agujeros", n + " × Ø" + dAg));
+
+
+      g.add(makeNota(V(0, yAg, 0), V(-1, -1, 0), kB * 3.20, "ø rebaje",
+                     n + " × Ø" + dAg + " · rebaje Ø" + rb.diam + " × " + rb.hondo));
+
+
+      if (n === 4){
+        const cxB = ais.left + ais.ancho / 2, fj = AIS_4F.fijacion;
+        g.add(makeDim(V(cxB - fj, yTop, 0), V(cxB + fj, yTop, 0), ARRIBA,
+                      kB * 1.75, "fijación", 2 * fj));
+        g.add(makeNota(V(cxB + fj, yAg, 0), V(1, -1, 0), kB * 4.40, "ø fijación",
+                       "2 × Ø" + dAg + " · rebaje Ø" + cj.diam + " × " + cj.hondo));
+        g.add(makeNota(V(cxB - fj, yAg, 0), V(-1, 1, 0), kB * 4.40, "ø fij abajo",
+                       "2 × Ø" + dAg));
+      }
+    }
+  }
+
+  if (COTAS_AISLADOR && pieza && ais && ais.tipo === "b"){
+    const agsAis = b.agujeros.filter(a => a.rol === "a")
+      .sort((p, q) => p.desdeArriba - q.desdeArriba);
+    if (agsAis.length){
+      const n = d.fases.length, cx = (n - 1) * d.sep / 2;
+      const cy = L - agsAis[0].desdeArriba;
+      const hx = pieza.largo / 2, hy = pieza.ancho / 2, ARRIBA = V(0, 1, 0);
+      const xExt = (n - 1) * pieza.paso / 2;                                    
+
+
+
+
+
+      const kA = 2 * hx * 0.075;
+
+      g.add(makeDim(V(cx - hx, cy - hy, 0), V(cx + hx, cy - hy, 0), ABAJO,
+                    kA * 2.60, "ancho ais", 2 * hx));
+
+
+
+
+      for (let i = 0; i + 1 < n; i++)
+        g.add(makeDim(V(cx - xExt + i * pieza.paso, cy + hy, 0),
+                      V(cx - xExt + (i + 1) * pieza.paso, cy + hy, 0), ARRIBA,
+                      kA * 0.80, "paso ais", pieza.paso));
+      g.add(makeDim(V(cx - pieza.fijacion, cy + hy, 0),
+                    V(cx + pieza.fijacion, cy + hy, 0), ARRIBA,
+                    kA * 1.75, "fijación", 2 * pieza.fijacion));
+
+
+
+
+
+
+
+      const cj = pieza.cajaFij, rb = pieza.rebaje;
+      g.add(makeNota(V(cx + xExt, cy, 0), V(1, 1, 0), kA * 3.10,
+                     "ø asientos", n + " × Ø" + pieza.agujero));
+      g.add(makeNota(V(cx + pieza.fijacion, cy, 0), V(1, -1, 0), kA * 4.30,
+                     "ø fijación", "2 × Ø" + pieza.agujero +
+                     " · rebaje Ø" + cj.diam + " × " + cj.hondo));
+
+      g.add(makeNota(V(cx - xExt, cy, 0), V(-1, -1, 0), kA * 3.10,
+                     "ø rebaje", n + " × Ø" + pieza.agujero +
+                     " · rebaje Ø" + rb.diam + " × " + rb.hondo));
+      g.add(makeNota(V(cx - pieza.fijacion, cy, 0), V(-1, 1, 0), kA * 4.30,
+                     "ø fij abajo", "2 × Ø" + pieza.agujero));
+
+      g.add(makeDim(V(cx - hx, cy - hy, -pieza.asiento), V(cx - hx, cy - hy, 0), IZQ,
+                    kA * 0.70, "asiento", pieza.asiento));
+      g.add(makeDim(V(cx - hx, cy - hy, 0), V(cx - hx, cy + hy, 0), IZQ,
+                    kA * 1.55, "alto ais", 2 * hy));
+    }
+  }
+
+
+
+
+
+
+  if (puntasIG && puntasIG.length > 1){
+
+
+
+    const yP = Math.max(...puntasIG.map(q => q.y)), zP = puntasIG[0].z;
+    for (let k = 0; k + 1 < puntasIG.length; k++)
+      g.add(makeDim(V(puntasIG[k].x, yP, zP), V(puntasIG[k + 1].x, yP, zP),
+                    V(0, 1, 0), dimT * 0.75, "paso",
+                    Math.abs(puntasIG[k + 1].x - puntasIG[k].x)));
+  }
+
+
+
+
+
+
+  if (cimaIG !== null){
+    const yC = (puntasIG && puntasIG.length) ? Math.max(...puntasIG.map(q => q.y)) : L;
+    g.add(makeDim(V(-hw, yC, -fondo), V(-hw, yC, cimaIG), IZQ,
+                  dimT * 1.6, "altura", cimaIG + fondo));
+  }
+
+  holder.add(g);
+  dims = g;
+  setDimsVisible($("bCota").classList.contains("on"));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function pieDeFijacion(obj){
+  obj.updateMatrixWorld(true);
+  const v = new THREE.Vector3();
+  let yMin = Infinity;
+  const pts = [];
+  obj.traverse(o => {
+    if (!o.isMesh) return;
+    const P = o.geometry.attributes.position;
+    for (let i = 0; i < P.count; i++){
+      v.fromBufferAttribute(P, i).applyMatrix4(o.matrixWorld);
+      pts.push(v.clone());
+      if (v.y < yMin) yMin = v.y;
+    }
+  });
+  if (!pts.length) return null;
+
+
+  const alRas = h => h.ymin < yMin + 0.2;
+  const ran = findRanuras(obj).filter(alRas);
+  if (ran.length) return {cx:ran[0].cx, cz:ran[0].cz, y:yMin,
+                          yTop:ran[0].ymax, paso:ran[0].ancho};
+  const ag = findHoles(obj).filter(alRas);
+  if (ag.length) return {cx:ag[0].cx, cz:ag[0].cz, y:yMin,
+                         yTop:ag[0].ymax, paso:2 * ag[0].r};
+
+  const bb = new THREE.Box3().setFromPoints(pts.filter(q => q.y < yMin + 0.05));
+  return {cx:(bb.min.x + bb.max.x) / 2, cz:(bb.min.z + bb.max.z) / 2, y:yMin, paso:0};
+}
+
+
+
+
+async function armarConector(mc, herr){
+
+
+
+  let base = null, edit;
+  if (mc.mallaCatalogo){
+    const r = mc.mallaCatalogo();
+    if (r.isMesh) edit = r; else { base = r.base; edit = r.edit; }
+  } else {
+    [base, edit] = await Promise.all([
+      mc.base ? loadPart(mc.base.url) : Promise.resolve(null),
+      loadPart(mc.edit.url),
+    ]);
+  }
+  paint(edit, mc.edit.color);
+  const g = new THREE.Group();
+
+
+  const tor = new THREE.Group();
+  let xPlaca = 0;
+
+  if (mc.base){
+    paint(base, mc.base.color);
+    g.add(base);
+
+    const hb = base.userData.agujeros || findHoles(base);
+    const he = edit.userData.agujeros || findHoles(edit);
+    if (!hb.length || !he.length) return null;
+    const A = hb.reduce((x, h) => h.ymax > x.ymax ? h : x);                   
+    const B = he.reduce((x, h) => h.ymin < x.ymin ? h : x);
+    const sub = new THREE.Group();
+    sub.position.set(A.cx, A.ymax, A.cz);
+
+
+    if (!mc.mallaCatalogo) sub.rotation.y = Math.PI / 2;
+    edit.position.set(-B.cx, -B.ymin, -B.cz);
+    sub.add(edit);
+    g.add(sub);
+    xPlaca = A.cx;
+
+
+
+
+    apilar(tor, herr, A.cx, A.ymax + (B.ymax - B.ymin), A.cz);
+  } else {
+    g.add(edit);                                                            
+  }
+
+
+  const pie = (base && base.userData.pie) || pieDeFijacion(g);
+  if (!pie) return null;
+  g.userData.pie = pie;
+  g.userData.yBase = pie.y;
+
+
+
+
+
+
+
+  const torPie = new THREE.Group();
+  if (typeof pie.yTop === "number") apilar(torPie, herr, pie.cx, pie.yTop, pie.cz);
+  g.userData.tor = tor.children.length ? tor : null;
+  g.userData.torPie = torPie.children.length ? torPie : null;
+
+
+
+  g.userData.alcance = xPlaca - pie.cx;
+  return g;
+}
+
+
+
+
+
+function apilar(destino, herr, x, yCara, z){
+  if (!herr) return;
+  let y = yCara;
+
+
+  if (herr.plana){
+    const pl = herr.plana.o.clone();
+    pl.position.set(x, y - herr.plana.y0, z);
+    destino.add(pl);
+    y += herr.plana.y1 - herr.plana.y0;
+  }
+  const ar = herr.ara.o.clone();
+  ar.position.set(x, y - herr.ara.y0, z);
+  destino.add(ar);
+  y += herr.ara.y1 - herr.ara.y0;
+  const t = herr.tor.o.clone();
+  t.position.set(x, y, z);
+  destino.add(t);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function pernosAislador(herr, agsA, b, d, fondo){
+  const g = new THREE.Group();
+  for (const a of agsA){
+    const cy = b.largo - a.desdeArriba;
+    for (let i = 0; i < d.fases.length; i++){
+      const arriba = new THREE.Group();
+      apilar(arriba, herr, 0, 0, 0);
+      arriba.rotation.x = Math.PI / 2;                                         
+      arriba.position.set(i * d.sep, cy, b.espesor);
+      g.add(arriba);
+      const abajo = new THREE.Group();
+      apilar(abajo, herr, 0, 0, 0);
+      abajo.rotation.x = -Math.PI / 2;                                    
+      abajo.position.set(i * d.sep, cy, -fondo);
+      g.add(abajo);
+    }
+  }
+  return g;
+}
+
+
+
+
+
+
+
+
+function tornillosAisladorBase(herr, agsA, b, d, ficha, fondo){
+  const g = new THREE.Group();
+  const zCabeza = ficha ? (-ficha.asiento + ficha.rebaje.hondo) : -fondo;
+  for (const a of agsA){
+    const cy = b.largo - a.desdeArriba;
+    for (let i = 0; i < d.fases.length; i++){
+      const x = i * d.sep;
+
+
+      const t = herr.tor.o.clone();
+      t.rotation.x = -Math.PI / 2;
+      t.position.set(x, cy, zCabeza);
+      g.add(t);
+      const cima = new THREE.Group();
+      let y = 0;
+      for (const h of [herr.plana, herr.ara, herr.tuerca]){
+        const o = h.o.clone();
+        o.position.set(0, y - h.y0, 0);
+        cima.add(o);
+        y += h.y1 - h.y0;
+      }
+      cima.rotation.x = Math.PI / 2;                                        
+      cima.position.set(x, cy, b.espesor);
+      g.add(cima);
+    }
+  }
+  return g;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function plantarConector(plant, barX, eje, zCara, lado, corr){
+
+
+  const pie = plant.userData.pie;
+  const sitio = [barX - lado * pie.cx, eje + lado * pie.cz,
+                 zCara - plant.userData.yBase];
+
+
+
+
+
+
+
+
+  const copia = (fuente, corrido) => {
+    const giro = new THREE.Group();
+    giro.add(fuente.clone(true));                                             
+    if (lado < 0) giro.rotation.y = Math.PI;
+    const tumbado = new THREE.Group();
+    tumbado.add(giro);
+    tumbado.rotation.x = Math.PI / 2;
+    tumbado.position.set(sitio[0] + (corrido ? (corr || 0) : 0), sitio[1], sitio[2]);
+    return tumbado;
+  };
+
+  const herraje = new THREE.Group();
+  if (plant.userData.tor)    herraje.add(copia(plant.userData.tor, true));
+  if (plant.userData.torPie) herraje.add(copia(plant.userData.torPie, false));
+  return {cobre: copia(plant, true),
+          herraje: herraje.children.length ? herraje : null};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function ponerConectorAlIG(d, b, mia, recotar){
+
+
+
+
+
+  if (_q.get('sinig') === '1') return;
+  const emp = b.agujeros.filter(a => a.rol === "c");
+  if (!emp.length) return;
+  const mc = porId("c1"), mrt = porId("c1rt");
+  if (!mc) return;
+
+  let herr;
+  try {
+    const [ara, tor, plana, tuerca] = await Promise.all([
+      cargarTornilleria("arandela-presion-1-4"),
+
+
+
+      cargarTornilleria("perno-1-4x3-4"),
+      cargarTornilleria("arandela-plana-1-4-corta"),
+      cargarTornilleria("tuerca-1-4"),
+    ]);
+    herr = {ara, tor, plana, tuerca};
+  } catch (e){
+    fail(e.message + "  ·  Ábrelo por http://localhost/, no con doble clic.");
+    return;
+  }
+  if (mia !== undefined && mia !== epoca) return;                 
+
+
+
+  const C1 = C1_CAT;
+  const RADIO_C1 = C1.radio;
+
+
+
+  const giroGen = new THREE.Matrix4().makeBasis(
+    new THREE.Vector3(0, 1, 0),
+    new THREE.Vector3(0, 0, 1),
+    new THREE.Vector3(1, 0, 0));
+
+
+
+
+
+  const cfgC1 = () => ({construirConectorC1, C1, salto: saltoIG});
+
+
+
+
+
+
+
+  const n = d.fases.length;
+  const delDibujo = !!(d.alIG && d.fases.every(f => typeof d.alIG[f] === "number"));
+  const sLat = delDibujo ? null
+             : addSlider("Corrimiento al IG", 0, 20, 9.5, true, "latIG");
+  const oCorr = delDibujo ? filaInfo("Corrimiento al IG") : null;
+  const oLat = filaInfo("Al IG");
+
+
+
+
+  const oHasta = filaInfo("Hasta el borne");
+
+
+
+  const oAviso = filaInfo("Aviso al IG");
+
+
+
+
+
+
+
+  const yEmp = b.largo - emp[0].desdeArriba;
+  const baseIG = () => holder.position.y + b.espesor + alzada(b, yEmp);
+  const SALTO_MIN = 2 * RADIO_C1;
+
+
+
+  let saltoIG = (typeof memoria.saltoIG === "number") ? memoria.saltoIG : C1.salto;
+  const sAlt = addSlider("Altura sobre la placa",
+                         baseIG() + SALTO_MIN + C1.espesor, baseIG() + 80 + C1.espesor,
+                         baseIG() + saltoIG + C1.espesor, true);
+  const leerSalto = () => {
+    saltoIG = +sAlt.input.value - baseIG() - C1.espesor;
+    sAlt.out.textContent = (+sAlt.input.value).toFixed(1) + " mm · salto " + saltoIG.toFixed(1);
+  };
+
+
+  const seguirBarra = () => {
+    sAlt.input.value = (baseIG() + saltoIG + C1.espesor).toFixed(3);
+    sAlt.out.textContent = (+sAlt.input.value).toFixed(1) + " mm · salto " + saltoIG.toFixed(1);
+  };
+  leerSalto();
+
+  if (!pin){ pin = new THREE.Group(); holder.add(pin); }
+  let gIG = null, gPin = null, geos = [];
+
+  function rehacer(){
+    if (gIG) gIG.removeFromParent();
+    if (gPin) gPin.removeFromParent();
+
+
+    geos.forEach(g => g.dispose());
+    geos = [];
+    gIG = new THREE.Group(); holder.add(gIG);
+    gPin = new THREE.Group(); pin.add(gPin);
+
+
+
+
+    const planIG = c1AlIG.plan(Object.assign(cfgC1(), {
+      fases: d.fases, alIG: d.alIG, filasIG: d.filasIG,
+      hastaIG: d.hastaIG, desdeArriba: emp[0].desdeArriba,
+      paso: sLat ? +sLat.input.value : 0}));
+    const encajar = planIG.encajar, entreObj = planIG.entreObj;
+    const entreUsado = planIG.entreUsado;
+    const latDe    = i => planIG.fases[i].lat;
+    const anchoDe  = i => planIG.fases[i].ancho;
+    const rebDe    = i => planIG.fases[i].reb;
+    let rectos = 0, codos = 0, aviso = null, pliegue = 0, alfaLo = 99, alfaHi = 0;
+    let corrio = 0, pedido = 0, giroMax = 0, deLado = 0, cantoMax = 0, enS = false, sobraS = 0;
+    const puntas = [];
+    let rebajada = null, anchoUsado = null;
+
+    for (let i = 0; i < n; i++){
+      const lat = latDe(i);
+      pedido = Math.max(pedido, Math.abs(lat));
+      let malla = null, giro, hx, hy, hz, m = null;
+      const recta_ = Math.abs(lat) < 0.05;
+
+
+
+
+      const reb = rebDe(i);
+      if (c1AlIG.esCatalogo(cfgC1(), planIG.fases[i], entreUsado)){
+        m = c1Catalogo();
+      } else {
+        try { m = c1AlIG.acodado(cfgC1(), lat, entreUsado, reb, anchoDe(i), false, encajar,
+                                 planIG.fases[i].dib); }
+        catch (e){ aviso = e.message; }
+
+
+
+
+        if (m && m.alturaMin > 2 * entreUsado + 0.1){
+          aviso = "para correrse " + Math.abs(lat).toFixed(1) +
+                  " mm la pieza pide " + m.alturaMin.toFixed(0) +
+                  " mm hasta el borne y solo hay " + entreUsado.toFixed(0);
+          m = null;
+        }
+
+
+        if (!m) m = c1Catalogo();
+      }
+
+
+      let punta;
+      if (recta_) rectos++;
+      {
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute("position", new THREE.Float32BufferAttribute(m.pos, 3));
+        geo.setAttribute("normal",   new THREE.Float32BufferAttribute(m.nor, 3));
+        geo.setIndex(m.idx);
+        geos.push(geo);
+        malla = new THREE.Mesh(geo, new THREE.MeshStandardMaterial(
+          {color:(mrt ? mrt.edit.color : mc.edit.color),
+           metalness:0.55, roughness:0.42}));
+
+
+        const a0 = m.agujeros.reduce((x, h) => h.p[0] < x.p[0] ? h : x);
+        giro = giroGen;
+
+
+
+
+        hx = a0.p[0]; hy = a0.p[1] - C1.espesor / 2; hz = a0.p[2];
+        punta = new THREE.Vector3(m.refB[0], m.refB[1], m.refB[2]);
+        if (m.puntaB) rebajada = m.puntaB.ancho;
+        if (Math.abs(m.ancho - C1.ancho) > 0.05) anchoUsado = m.ancho;
+        if (!recta_){
+          pliegue = m.pliegue; codos++;
+          alfaLo = Math.min(alfaLo, Math.abs(m.alfa)); alfaHi = Math.max(alfaHi, Math.abs(m.alfa));
+          deLado = Math.max(deLado, Math.abs(m.latF));
+          giroMax = Math.max(giroMax, Math.abs(m.giro) * 180 / Math.PI);
+          corrio = Math.max(corrio, m.corrio);
+          if (m.enS) {
+            enS = true; cantoMax = Math.max(cantoMax, m.canto || 0);
+
+            sobraS = Math.max(sobraS, m.alturaMin - entreObj);
+          }
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+      const tor = new THREE.Group();
+      const pila = new THREE.Group();
+
+      apilar(pila, {ara:herr.ara, tor:herr.tor}, 0, 0, 0);
+      pila.rotation.x = Math.PI;
+      pila.position.set(hx, hy - b.espesor, hz);
+      tor.add(pila);
+
+
+
+      let yCima = hy + C1.espesor;
+      for (const h of [herr.plana, herr.ara, herr.tuerca]){
+        const o = h.o.clone();
+        o.position.set(hx, yCima - h.y0, hz);
+        tor.add(o);
+        yCima += h.y1 - h.y0;
+      }
+
+
+
+
+
+
+
+      const vuelta = m.giro ? -m.giro : 0;
+      const M = new THREE.Matrix4().makeRotationZ(vuelta).multiply(giro);
+      const agujero = new THREE.Vector3(hx, hy, hz);
+      for (const e of emp){
+        const yE = b.largo - e.desdeArriba;
+        const pos = new THREE.Vector3(i * d.sep, yE, b.espesor + alzada(b, yE));
+        puntas.push(punta.clone().sub(agujero).applyMatrix4(M).add(pos));
+        const copia = fuente => {
+          const c = fuente.clone(true);
+          c.position.set(-hx, -hy, -hz);
+          const q = new THREE.Group();
+          q.quaternion.setFromRotationMatrix(giro);
+          q.add(c);
+          const g = new THREE.Group();
+          g.rotation.z = vuelta;
+          g.position.copy(pos);
+          g.add(q);
+          return g;
+        };
+        gIG.add(copia(malla));
+        if (tor.children.length) gPin.add(copia(tor));
+      }
+    }
+
+
+
+    if (sLat) sLat.out.textContent = (+sLat.input.value).toFixed(1) + " mm";
+    if (oCorr) oCorr.textContent = d.fases.map(f =>
+      f + " " + (d.alIG[f] >= 0 ? "+" : "") + d.alIG[f].toFixed(1)).join(" · ");
+    oHasta.textContent = entreUsado.toFixed(1) + " mm" +
+      ((typeof d.hastaIG === "number") ? " · del dibujo" : " · de la recta de catálogo");
+
+
+
+    oLat.textContent = codos
+      ? (enS
+         ? (codos + " como el dibujo: rectos sobre la barra, en S de canto a " +
+            cantoMax.toFixed(0) + "° (R40) hasta la columna del borne, " +
+            corrio.toFixed(1) + " de lado" + (rectos ? " + " + rectos + " recto" : "") +
+            (sobraS > 0.5 ? " · con esas curvas la pieza sube " + sobraS.toFixed(0) +
+                            " mm más que el dibujo: el trapecio del 2D es corto para ese corrimiento" : ""))
+         : (codos + " acodados a " + (Math.abs(alfaHi - alfaLo) < 0.5 ? alfaHi.toFixed(0)
+                                    : alfaLo.toFixed(0) + "–" + alfaHi.toFixed(0)) + "° (pliegue " +
+            pliegue.toFixed(0) + "°, " + deLado.toFixed(1) + " de lado) girados " +
+            giroMax.toFixed(1) + "° sobre el perno, punta rolada a plomo" +
+            (rectos ? " + " + rectos + " recto" : "")))
+      : (rectos + " rectos");
+    if (anchoUsado !== null)
+      oLat.textContent += " · pletina de " + anchoUsado.toFixed(0) + " mm";
+    if (rebajada !== null)
+      oLat.textContent += " · punta rebajada a " + rebajada.toFixed(0) + " mm, sin agujero";
+
+
+
+    if (!aviso && codos && corrio < pedido - 0.05)
+      aviso = "el doblez solo se corre " + corrio.toFixed(1) +
+              " mm: no da para el paso pedido";
+    if (!aviso && entreUsado > entreObj + 0.1)
+      aviso = "la pieza no cabe en " + entreObj.toFixed(1) +
+              " mm hasta el borne: suben las tres a " + entreUsado.toFixed(1);
+    oAviso.textContent = aviso || "—";
+
+
+
+    puntasIG = puntas.sort((p, q) => p.x - q.x);
+
+
+    holder.updateMatrixWorld(true);
+    const cima = new THREE.Box3().setFromObject(gIG);
+    if (gPin && gPin.children.length) cima.union(new THREE.Box3().setFromObject(gPin));
+
+
+    cimaIG = cima.isEmpty() ? null : cima.max.y - holder.position.y;
+    if (recotar) recotar();
+  }
+
+
+
+  const rehacerAlCuadro = porCuadro(rehacer);
+  if (sLat) sLat.input.oninput = () => { memoria.latIG = +sLat.input.value; rehacerAlCuadro(); };
+  sAlt.input.oninput = () => { leerSalto(); memoria.saltoIG = saltoIG; rehacerAlCuadro(); };
+  rehacer();
+
+  if (pin.children.length){
+    pin.visible = $("bPin").classList.contains("on");
+    $("bPin").classList.remove("off");
+  }
+  card({color:mc.edit.color, label:mc.edit.label});
+  if (mrt) card({color:mrt.edit.color, label:mrt.edit.label});
+
+  return {rehacer: () => { seguirBarra(); rehacer(); }};
+}
+
+
+
+
+
+
+
+let epoca = 0;
+
+
+
+
+
+let puntasIG = null;
+
+
+
+let cimaIG = null;                                                                           
+
+
+
+
+
+
+
+
+
+const C1_CAT = {
+  ancho:20, espesor:3, salto:22, agujero:7, desdeA:10, desdeB:9, entre:46,
+
+
+
+
+  radio:3, avance:16.17, pestanaA:22.4, pestanaB:26.43,
+};
+
+const c1Catalogo = (lateral = 0) => construirConectorC1({
+  ancho:C1_CAT.ancho, espesor:C1_CAT.espesor, salto:C1_CAT.salto,
+  radio:C1_CAT.radio, lateral, avance:C1_CAT.avance,
+  pestanaA:C1_CAT.pestanaA, pestanaB:C1_CAT.pestanaB,
+  agujero:C1_CAT.agujero, desdeA:C1_CAT.desdeA, desdeB:C1_CAT.desdeB,
+  alfa:45, alfaMax:45, pliegueMax:70, recorta:true});
+
+
+
+async function montarC1(m, mia){
+  destino = 'dimCtls';
+  $('bPin').classList.add('off');
+  holder = new THREE.Group();
+  asm.add(holder);
+  card({color:m.edit.color, label:m.edit.label});
+  const mat = new THREE.MeshStandardMaterial(
+    {color:m.edit.color, metalness:0.55, roughness:0.42});
+  const oPieza = filaInfo('Pieza');
+  const sLat = m.lateral ? addSlider('Corrimiento lateral', 0, 20, m.lateral,
+                                     false, null, 0.5) : null;
+  const oDev = filaDev(m.edit.label);
+  let malla = null;
+
+  function rehacer(){
+    const lat = sLat ? +sLat.input.value : 0;
+    let c;
+    try { c = c1Catalogo(lat); }
+    catch (e){ return fail(e.message); }
+    $('err').classList.remove('show');
+    if (malla){ malla.removeFromParent(); malla.geometry.dispose(); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(c.pos, 3));
+    g.setAttribute('normal',   new THREE.Float32BufferAttribute(c.nor, 3));
+    g.setIndex(c.idx);
+    malla = new THREE.Mesh(g, mat);
+    holder.add(malla);
+    partMesh = malla; piezas = [malla];
+    oPieza.textContent = C1_CAT.ancho + ' × ' + C1_CAT.espesor + ' · salto ' +
+      C1_CAT.salto + ' · pliegue ' + c.pliegue.toFixed(0) + '°' +
+      (lat ? ' · ' + Math.abs(c.lateral).toFixed(1) + ' de lado' : '') +
+      ' · ' + c.volumen.toFixed(0) + ' mm³';
+    oDev.textContent = c.desarrollo.toFixed(1) + ' mm';
+    if (sLat) sLat.out.textContent = lat.toFixed(1) + ' mm';
+  }
+  if (sLat) sLat.input.oninput = rehacer;
+  rehacer();
+  frame();
+}
+
+
+
+
+
+
+
+
+const S_CAT = {ancho:10, espesor:2, radio:2, base:19, alto:44.5, recto:23,
+               cabeza:11, inclinacion:3.97, cuello:5.2, radioPunta:2.6,
+               curvaEscalon:true, agujero:5};
+
+
+
+
+
+const S_CAT_M1 = {ancho:15, espesor:3, radio:3, base:28.5, alto:44.5, recto:35,
+                  cabeza:18, inclinacion:0, cuello:15, radioPunta:0,
+                  curvaEscalon:false, agujero:6.6};
+const fichaS = fam => (fam === 'M1') ? S_CAT_M1 : S_CAT;
+
+function mallaS(o, mat, fam){
+  const c = construirConectorS(THREE, Object.assign({}, fichaS(fam), o || {}));
+  const mesh = new THREE.Mesh(c.geo, mat || new THREE.MeshStandardMaterial(
+    {color:ACERO, metalness:0.55, roughness:0.42}));
+  mesh.userData.medidas = c;
+  return mesh;
+}
+
+
+
+
+async function montarS(m, mia){
+  destino = 'dimCtls';
+  $('bPin').classList.add('off');
+  holder = new THREE.Group();
+  asm.add(holder);
+  card({color:m.edit.color, label:m.edit.label});
+  const mat = new THREE.MeshStandardMaterial(
+    {color:m.edit.color, metalness:0.55, roughness:0.42});
+
+
+  const FS = fichaS(m.fam), K = k => k + (m.fam || '');
+
+
+  const recta = m.recto;
+  const sAlto  = addSlider('Alto', 25, 120, FS.alto, true, K('alto'));
+  const sBase  = addSlider('Base', 15, 60, FS.base, true, K('baseS'));
+  const sRecto = addSlider('Recto', 15, 90, FS.recto, true, K('recto'));
+  const sCab   = addSlider('Cabeza por lado', 5, 25, FS.cabeza, true, K('cabeza'));
+
+
+  const chkCab = recta ? null
+    : addCheck('Editar cabeza', K('anchoCabOn'), on => { verCabeza(on); rehacer(); });
+  const sAnc = recta ? null
+    : addSlider('Ancho de cabeza', FS.cuello, FS.ancho, FS.cuello, true, K('anchoCab'), 0.1);
+  const sPun = recta ? null
+    : addSlider('Radio de punta', 0, FS.radioPunta, FS.radioPunta, true, K('radioPunta'), 0.1);
+  const chkCurva = recta ? null
+    : addCheck('Curva del escalón', K('curvaEsc'), () => rehacer(), true);
+
+  const chkPata  = recta ? null : addCheck('Patas rectas', K('pataRecta'), () => rehacer());
+  const oInc = filaInfo('Inclinación de patas');
+  const oDev = filaDev(m.edit.label);
+  const filaDe = sl => sl.input.closest('.ctl');
+
+
+  const verCabeza = on => {
+    if (recta) return;
+    for (const sl of [sAnc, sPun]) filaDe(sl).style.display = on ? '' : 'none';
+    chkCurva.closest('label').style.display = on ? '' : 'none';
+  };
+  if (!recta) verCabeza(chkCab.checked);
+
+  let malla = null;
+  function rehacer(){
+    const on = !!(chkCab && chkCab.checked);
+    const o = {
+      alto:+sAlto.input.value, base:+sBase.input.value, recto:+sRecto.input.value,
+      cabeza:+sCab.input.value,
+      inclinacion: (chkPata && chkPata.checked) ? 0 : FS.inclinacion,
+      cuello: on ? +sAnc.input.value : FS.cuello,
+      radioPunta: on ? Math.min(+sPun.input.value, +sAnc.input.value / 2) : FS.radioPunta,
+      curvaEscalon: on ? chkCurva.checked : FS.curvaEscalon !== false,
+    };
+
+    if (sPun) sPun.input.max = (o.cuello / 2).toFixed(2);
+    let c;
+    try { c = construirConectorS(THREE, Object.assign({}, FS, o)); }
+    catch (e){ return fail(e.message); }
+    $('err').classList.remove('show');
+    if (malla){ malla.removeFromParent(); malla.geometry.dispose(); }
+    malla = new THREE.Mesh(c.geo, mat);
+    holder.add(malla);
+    partMesh = malla; piezas = [malla];
+
+
+    const muestra = (sl, v) => { if (sl) sl.out.textContent = v.toFixed(1) + ' mm'; };
+    muestra(sAlto, o.alto);   muestra(sBase, o.base);
+    muestra(sRecto, o.recto); muestra(sCab, o.cabeza);
+    muestra(sAnc, o.cuello);  muestra(sPun, o.radioPunta);
+    oInc.textContent = c.inclinacion.toFixed(2) + '°' +
+      (c.inclinacion < 0.005 ? ' · rectas' : ' · convergen ' +
+        (c.pata * Math.sin(c.inclinacion * Math.PI / 180)).toFixed(2) + ' mm en ' +
+        c.pata.toFixed(2));
+
+
+    oDev.textContent = c.desarrollo.toFixed(1) + ' mm';
+    cotasS(c, o);
+  }
+
+
+
+  function cotasS(c, o){
+    clearDims();
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    const W = c.ancho, t = c.espesor, L = c.largo, top = c.alto - t;
+    const ARRIBA = V(0, 1, 0), ABAJO = V(0, -1, 0), IZQ = V(-1, 0, 0);
+    dimScale = Math.max(8, 0.6 * Math.max(L, 20));
+    const k = dimScale;
+    const g = new THREE.Group();
+    g.add(makeDim(V(-L / 2, -t, W), V(-L / 2, top, W), IZQ, k * 0.35, 'alto', c.alto));
+    g.add(makeDim(V(-o.base / 2, -t, W), V(o.base / 2, -t, W), ABAJO, k * 0.30, 'base', o.base));
+    g.add(makeDim(V(-o.recto / 2, top, W), V(o.recto / 2, top, W), ARRIBA, k * 0.30,
+                  'recto', o.recto));
+    for (const sg of [-1, 1])
+      g.add(makeDim(V(sg * o.recto / 2, top, W), V(sg * L / 2, top, W), ARRIBA, k * 0.30,
+                    'cabeza', o.cabeza));
+    g.add(makeDim(V(-L / 2, top, W), V(L / 2, top, W), ARRIBA, k * 0.62, 'ancho', L, true));
+
+
+    const rE = (W - o.cuello) / 2, rP = Math.min(o.radioPunta, o.cuello / 2);
+    const xN = -((o.recto / 2 + rE) + (L / 2 - rP)) / 2;
+    g.add(makeDim(V(xN, top, W / 2 - o.cuello / 2), V(xN, top, W / 2 + o.cuello / 2),
+                  IZQ, k * 0.45, 'ancho cab', o.cuello));
+    if (o.radioPunta > 0.05)
+      g.add(makeNota(V(-L / 2, top, W / 2), V(-1, 1, 0), k * 0.55, 'punta',
+                     'R' + rP.toFixed(1)));
+
+
+
+    if (c.inclinacion > 0.01){
+      const P0 = V(c.pataIzq.p0[0], c.pataIzq.p0[1], W);
+      const P1 = V(c.pataIzq.p1[0], c.pataIzq.p1[1], W);
+      const ang = makeAng(P0, ABAJO, P0.clone().sub(P1), P0.distanceTo(P1) * 1.8,
+                          'patas', c.inclinacion);
+      if (ang) g.add(ang);
+    }
+    holder.add(g);
+    dims = g;
+    setDimsVisible($('bCota').classList.contains('on'));
+  }
+
+
+
+  const liga = (sl, clave) => {
+    if (!sl) return;
+    sl.input.oninput = () => { memoria[clave] = +sl.input.value; rehacer(); };
+  };
+  liga(sAlto, K('alto')); liga(sBase, K('baseS')); liga(sRecto, K('recto'));
+  liga(sCab, K('cabeza')); liga(sAnc, K('anchoCab')); liga(sPun, K('radioPunta'));
+  rehacer();
+  frame();
+}
+
+
+
+
+
+async function montarRT(m, mia){
+  destino = 'dimCtls';
+  let herr;
+  try {
+    const [ara, tor, plana] = await Promise.all([
+      cargarTornilleria('arandela-presion-3-16'),
+      cargarTornilleria('tornillo-3-16x3-8'),
+      cargarTornilleria('arandela-plana-3-16-corta'),
+    ]);
+    herr = {ara, tor, plana};
+  } catch (e){
+    if (mia === undefined || mia === epoca)
+      fail(e.message + '  ·  Ábrelo por http://localhost/, no con doble clic.');
+    return;
+  }
+  if (mia !== undefined && mia !== epoca) return;
+
+  holder = new THREE.Group();
+  asm.add(holder);
+  card(m.base);
+  card(m.edit);
+  const mat = new THREE.MeshStandardMaterial(
+    {color:m.edit.color, metalness:0.55, roughness:0.42});
+
+
+
+  const FR = fichasDe(m.id), K = k => k + (m.fam || '');
+  const ficha = /^inter/.test(m.id) ? FR.inter : FR.rt;
+  const recta = m.recto;
+
+  const sAlto  = addSlider('Alto', 25, 120, ficha.alto, true, K('alto'));
+  const sRecto = addSlider('Recto', 15, 90, FR.placa.recto, true, K('recto'));
+  const sCab   = addSlider('Cabeza por lado', 5, 25, FR.placa.cabeza, true, K('cabeza'));
+
+
+  const chkP1 = recta ? null
+    : addCheck('Editar parte 1', K('salienteOn'), on => { verP1(on); rehacer(); });
+  const sSal  = recta ? null
+    : addSlider('Saliente de punta', 0, 2, ficha.saliente, true, K('saliente'), 0.1);
+  const chkP2 = recta ? null
+    : addCheck('Editar parte 2', K('anchoCabOn'), on => { verP2(on); rehacer(); });
+  const sAnc = recta ? null
+    : addSlider('Ancho de cabeza', FR.placa.cuello, FR.placa.ancho, FR.placa.cuello,
+                true, K('anchoCab'), 0.1);
+  const sPun = recta ? null
+    : addSlider('Radio de punta', 0, FR.placa.radioPunta, FR.placa.radioPunta,
+                true, K('radioPunta'), 0.1);
+  const chkCurva = recta ? null : addCheck('Curva del escalón', K('curvaEsc'), () => rehacer(), true);
+  const oAlc = filaInfo('Alcance');
+  const oDevS = filaDev(m.base.label), oDevP = filaDev(m.edit.label);
+  const oDevT = filaDev('Total', 'tot');
+  const filaDe = sl => sl.input.closest('.ctl');
+  const verP1 = on => { if (sSal) filaDe(sSal).style.display = on ? '' : 'none'; };
+  const verP2 = on => {
+    if (recta) return;
+    for (const sl of [sAnc, sPun]) filaDe(sl).style.display = on ? '' : 'none';
+    chkCurva.closest('label').style.display = on ? '' : 'none';
+  };
+  if (!recta){ verP1(chkP1.checked); verP2(chkP2.checked); }
+
+  let piezasRT = null;
+  function rehacer(){
+    const on2 = !!(chkP2 && chkP2.checked);
+    const oS = {alto:+sAlto.input.value,
+                saliente: (chkP1 && chkP1.checked) ? +sSal.input.value : ficha.saliente};
+    const oP = {recto:+sRecto.input.value, cabeza:+sCab.input.value,
+                cuello: on2 ? +sAnc.input.value : FR.placa.cuello,
+                radioPunta: on2 ? Math.min(+sPun.input.value, +sAnc.input.value / 2)
+                                : FR.placa.radioPunta,
+                curvaEscalon: on2 ? chkCurva.checked : FR.placa.curvaEscalon !== false};
+    if (sPun) sPun.input.max = (oP.cuello / 2).toFixed(2);
+    let r;
+    try { r = mallaRT(m.id, {soporte:oS, placa:oP}, mat); }
+    catch (e){ return fail(e.message); }
+    $('err').classList.remove('show');
+    if (piezasRT){
+      for (const o of [piezasRT.base, piezasRT.edit]){ o.removeFromParent(); o.geometry.dispose(); }
+      if (pin){ pin.removeFromParent(); pin = null; }
+    }
+    piezasRT = r;
+    const A = r.soporte.agujero;
+    r.edit.position.set(A.cx, A.ymax, 0);
+    holder.add(r.base);
+    holder.add(r.edit);
+    partMesh = r.edit; piezas = [r.base, r.edit];
+
+
+    pin = new THREE.Group();
+    apilar(pin, herr, A.cx, A.ymax + r.placa.espesor, A.cz);
+    pin.visible = $('bPin').classList.contains('on');
+    asm.add(pin);
+
+
+    const muestra = (sl, v) => { if (sl) sl.out.textContent = v.toFixed(1) + ' mm'; };
+    muestra(sAlto, oS.alto);      muestra(sRecto, oP.recto);
+    muestra(sCab, oP.cabeza);     muestra(sSal, oS.saliente);
+    muestra(sAnc, oP.cuello);     muestra(sPun, oP.radioPunta);
+    oAlc.textContent = r.soporte.alcance.toFixed(1) + ' mm de la ranura al agujero de la brida';
+    oDevS.textContent = r.soporte.desarrollo.toFixed(1) + ' mm';
+    oDevP.textContent = r.placa.desarrollo.toFixed(1) + ' mm';
+    oDevT.textContent = (r.soporte.desarrollo + r.placa.desarrollo).toFixed(1) + ' mm';
+    cotasRT(r, oS, oP);
+  }
+
+
+
+
+  function cotasRT(r, oS, oP){
+    clearDims();
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    const sop = r.soporte, pla = r.placa, W = sop.ancho, t = sop.espesor;
+    const A = sop.agujero, yP = A.ymax + t, L = pla.largo;
+    const ARRIBA = V(0, 1, 0), ABAJO = V(0, -1, 0), DER = V(1, 0, 0), IZQ = V(-1, 0, 0);
+    dimScale = Math.max(8, 0.6 * Math.max(sop.largo, 20));
+    const k = dimScale;
+    const g = new THREE.Group();
+    const xDer = Math.max(sop.largo, A.cx + L / 2);
+    g.add(makeDim(V(xDer, -t, W), V(xDer, yP, W), DER, k * 0.30, 'alto', sop.alto));
+    g.add(makeDim(V(A.cx - oP.recto / 2, yP, W), V(A.cx + oP.recto / 2, yP, W), ARRIBA,
+                  k * 0.25, 'recto', oP.recto));
+    for (const sg of [-1, 1])
+      g.add(makeDim(V(A.cx + sg * oP.recto / 2, yP, W), V(A.cx + sg * L / 2, yP, W), ARRIBA,
+                    k * 0.25, 'cabeza', oP.cabeza));
+    g.add(makeDim(V(A.cx - L / 2, yP, W), V(A.cx + L / 2, yP, W), ARRIBA, k * 0.52,
+                  'ancho', L, true));
+    const rE = (W - oP.cuello) / 2, rP = Math.min(oP.radioPunta, oP.cuello / 2);
+    const xN = A.cx - ((oP.recto / 2 + rE) + (L / 2 - rP)) / 2;
+    g.add(makeDim(V(xN, yP, W / 2 - oP.cuello / 2), V(xN, yP, W / 2 + oP.cuello / 2),
+                  IZQ, k * 0.40, 'ancho cab', oP.cuello));
+    if (oP.radioPunta > 0.05)
+      g.add(makeNota(V(A.cx - L / 2, yP, W / 2), V(-1, 1, 0), k * 0.5, 'punta',
+                     'R' + rP.toFixed(1)));
+
+
+    g.add(makeDim(V(sop.pie.cx, -t, W), V(A.cx, -t, W), ABAJO, k * 0.45, 'alcance',
+                  sop.alcance, true));
+    if (oS.saliente > 0.05)
+      g.add(makeDim(V(0, -t, W), V(oS.saliente, -t, W), ABAJO, k * 0.22, 'saliente',
+                    oS.saliente));
+    holder.add(g);
+    dims = g;
+    setDimsVisible($('bCota').classList.contains('on'));
+  }
+
+
+
+  const liga = (sl, clave) => {
+    if (!sl) return;
+    sl.input.oninput = () => { memoria[clave] = +sl.input.value; rehacer(); };
+  };
+  liga(sAlto, K('alto')); liga(sRecto, K('recto')); liga(sCab, K('cabeza'));
+  liga(sSal, K('saliente')); liga(sAnc, K('anchoCab')); liga(sPun, K('radioPunta'));
+  rehacer();
+  frame();
+}
+
+const GENERADOS = {barraPE: montarBarraPE, barraN: montarBarraN, barrasFase: montarBarrasFase,
+                   c1: montarC1, c1rt: montarC1, s: montarS,
+                   rt: montarRT, inter: montarRT,
+
+                   's-m1': montarS, 'rt-m1': montarRT, 'inter-m1': montarRT};
+
+
+
+function porCuadro(f){
+  let pedido = false;
+  return () => {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(() => { pedido = false; f(); });
+  };
+}
+
+
+
+const alzada = (b, y) => (b && b.alzada) ? b.alzada(y) : 0;
+
+
+
+
+let ultimoMontaje = null;
+async function remontar(){
+  if (!ultimoMontaje) return;
+  const vista = {ojo, pos: ojo.position.clone(), zoom: ojo.zoom,
+                 mira: controls.target.clone()};
+  await mountModel(ultimoMontaje.m, ultimoMontaje.fases);
+  ojo = vista.ojo;
+  controls.object = ojo;
+  ojo.position.copy(vista.pos);
+  ojo.zoom = vista.zoom;
+  ojo.updateProjectionMatrix();
+  controls.target.copy(vista.mira);
+  controls.update();
+}
+
+async function mountModel(m, fases){
+  ultimoMontaje = {m, fases};
+  const mia = ++epoca;
+  clearScene();
+  $('hTitle').textContent = m.label + (fases ? ' · ' + fases : '');
+  esConjunto = !!m.base;
+  $('bPin').classList.toggle('off', !esConjunto);
+
+
+
+
+
+
+
+
+
+
+
+  if (!cotasTocadas) $('bCota').classList.toggle('on', !SIN_COTAS_AL_ABRIR.has(m.id));
+  if (m.generado) return GENERADOS[m.id](m, mia);
+  fail('el modelo ' + m.id + ' no tiene montaje');
+}
+
+
+const porId = id => MODELOS.find(m => m.id === id);
+
+function llenarModelos(iSis, idPedido){
+  const sis = SISTEMAS[iSis], sel = $('selMod');
+  sel.innerHTML = '';
+  for (const m of sis.modelos){
+    if (MODELOS_OCULTOS.has(m.id) && m.id !== idPedido) continue;
+
+    if (m.id === 'barraN' && !memoria.nLayout && m.id !== idPedido) continue;
+    const o = document.createElement('option');
+    o.value = m.id;
+    o.textContent = porId(m.id).label + ' · ' + m.fases;
+    sel.appendChild(o);
+  }
+
+
+
+  const eleg = sis.modelos.find(m => m.id === idPedido) ||
+               sis.modelos.find(m => !MODELOS_OCULTOS.has(m.id)) || sis.modelos[0];
+  sel.value = eleg.id;
+  return mountModel(porId(eleg.id), eleg.fases);
+}
+
+SISTEMAS.forEach((sis, i) => {
+  const o = document.createElement('option');
+  o.value = i; o.textContent = sis.label;
+  $('selSis').appendChild(o);
+});
+
+
+
+
+
+const _q = new URLSearchParams(location.search);
+const _num = (k, def) => { const v = parseFloat(_q.get(k)); return isFinite(v) ? v : def; };
+memoria.alto   = _num('alto', 44.5);
+memoria.recto  = _num('recto', 23);
+memoria.cabeza = _num('cabeza', 11);
+
+
+
+
+for (const [q, k] of [['ala','alaPE'], ['altope','altoPE']]){
+  const v = parseFloat(_q.get(q));
+  if (isFinite(v)) memoria[k] = v;
+}
+
+
+memoria.peLayout = (_q.get('pe') || '').replace(/[^sic]/g, '');
+
+memoria.nLayout = (_q.get('bn') || '').replace(/[^sic]/g, '');
+
+
+
+
+
+memoria.bfBarras = (() => {
+  const fases = (_q.get('bf') || '').split(',')
+    .map(x => x.trim()).filter(x => /^[RSTN]$/.test(x));
+  const largo = parseFloat(_q.get('bl')), sep = parseFloat(_q.get('bs'));
+  const ags = (_q.get('bh') || '').split(',').map(par => {
+    const [dia, resto] = par.split('@');
+    const [y, rol] = (resto || '').split(':');
+    return {diam:parseFloat(dia), desdeArriba:parseFloat(y), rol:rol || 'a'};
+  }).filter(a => isFinite(a.diam) && a.diam > 0 && isFinite(a.desdeArriba));
+  if (!fases.length || !(largo > 0) || !ags.length) return null;
+
+
+
+
+  const ba = (_q.get('ba') || '').split(',');
+  let ais = null;
+  if (ba[0] === 'b' && ba.length >= 5)
+    ais = {tipo:'b', ancho:+ba[1], alto:+ba[2], left:+ba[3],
+           filas:ba.slice(4).map(Number)};
+  else if (ba[0] === 'd' && ba.length >= 3)
+    ais = {tipo:'d', diam:+ba[1], filas:ba.slice(2).map(Number)};
+
+
+
+  const con = (_q.get('bc') || '').split(',').map(par => {
+    const [f, resto] = par.split('@');
+    const [y, tipo] = (resto || '').split(':');
+    return {fase:(f || '').trim(), eje:parseFloat(y), tipo:tipo || 'r'};
+  }).filter(cc => /^[RSTN]$/.test(cc.fase) && isFinite(cc.eje));
+
+
+
+
+
+
+  const bi = (_q.get('bi') || '').split(',').map(par => {
+    const [f, resto] = par.split('@');
+    return {fase:(f || '').trim(), n:(resto || '').split(';').map(parseFloat)};
+  }).filter(p => /^[RSTN]$/.test(p.fase) && p.n.length && isFinite(p.n[0]));
+  const alIG = bi.length
+    ? Object.fromEntries(bi.map(p => [p.fase, p.n[0]])) : null;
+  const filasIG = (bi.length && bi.every(p => p.n.length >= 7 && p.n.every(isFinite)))
+    ? Object.fromEntries(bi.map(p => [p.fase, {dx1:p.n[0], w1:p.n[1], h1:p.n[2],
+                                              dx2:p.n[3], w2:p.n[4], h2:p.n[5], y2:p.n[6],
+
+                                              y4:(p.n.length >= 8 && isFinite(p.n[7])) ? p.n[7] : 0}]))
+    : null;
+  const bt = parseFloat(_q.get('bt'));
+  return {fases, largo, sep: (sep > 0 ? sep : 50), agujeros: ags, ais,
+          conectores: con, alIG, filasIG, hastaIG: isFinite(bt) ? bt : null};
+})();
+
+const _sisPedido = _q.get('sis') || '3F';
+let _iSis = SISTEMAS.findIndex(x => x.label.replace(/\s+/g, '') === _sisPedido.replace(/\s+/g, ''));
+if (_iSis < 0) _iSis = 0;
+$('selSis').value = _iSis;
+$('sisFijo').textContent = SISTEMAS[_iSis].label;
+const _primerMontaje = llenarModelos(_iSis, _q.get('modelo'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let modoDibujo = false;
+const MAT_DIB_CARA  = new THREE.MeshBasicMaterial({color:0xffffff, polygonOffset:true,
+                                                   polygonOffsetFactor:1, polygonOffsetUnits:1});
+const MAT_DIB_LINEA = new THREE.LineBasicMaterial({color:0x111111});
+const MAT_DIB_BORDE = new THREE.MeshBasicMaterial({color:0x111111, side:THREE.BackSide});
+const FONDO_DIBUJO = new THREE.Color(0xffffff), FONDO_NORMAL = new THREE.Color(0xe2e6ec);
+const GROSOR_BORDE = 0.25;                                                            
+
+
+
+
+function lineasPara(geo, escala){
+
+
+
+
+  const clave = geo.uuid + "@" + escala.toFixed(6) + "@" +
+                geo.attributes.position.version;
+  let l = lineasDe.get(clave);
+  if (l) return l;
+  const aristas = new THREE.EdgesGeometry(geo, 20);
+
+
+  const p = geo.attributes.position, n = geo.attributes.normal;
+  const hin = new Float32Array(p.count * 3), d = GROSOR_BORDE / escala;
+  for (let i = 0; i < p.count; i++){
+    hin[3 * i]     = p.getX(i) + (n ? n.getX(i) : 0) * d;
+    hin[3 * i + 1] = p.getY(i) + (n ? n.getY(i) : 0) * d;
+    hin[3 * i + 2] = p.getZ(i) + (n ? n.getZ(i) : 0) * d;
+  }
+  const borde = new THREE.BufferGeometry();
+  borde.setAttribute("position", new THREE.BufferAttribute(hin, 3));
+  if (geo.index) borde.setIndex(geo.index);
+  l = {aristas, borde};
+  lineasDe.set(clave, l);
+  return l;
+}
+function aplicarDibujo(){
+  scene.background = modoDibujo ? FONDO_DIBUJO : FONDO_NORMAL;
+  const v = new THREE.Vector3();
+  asm.traverse(o => {
+    if (!o.isMesh || o.userData.esLinea) return;
+    if (modoDibujo && !o.userData.dibujo){
+      const escala = o.getWorldScale(v).x || 1;
+      const l = lineasPara(o.geometry, escala);
+      const a = new THREE.LineSegments(l.aristas, MAT_DIB_LINEA);
+      const b = new THREE.Mesh(l.borde, MAT_DIB_BORDE);
+      a.userData.esLinea = b.userData.esLinea = true;
+      o.add(a, b);
+      o.userData.dibujo = {a, b, mat:o.material, ver:o.geometry.attributes.position.version};
+      o.material = MAT_DIB_CARA;
+    } else if (modoDibujo && o.userData.dibujo &&
+               o.userData.dibujo.ver !== o.geometry.attributes.position.version){
+
+      const d = o.userData.dibujo;
+      o.remove(d.a, d.b);
+      const escala = o.getWorldScale(v).x || 1;
+      const l = lineasPara(o.geometry, escala);
+      const a = new THREE.LineSegments(l.aristas, MAT_DIB_LINEA);
+      const b = new THREE.Mesh(l.borde, MAT_DIB_BORDE);
+      a.userData.esLinea = b.userData.esLinea = true;
+      o.add(a, b);
+      o.userData.dibujo = {a, b, mat:d.mat, ver:o.geometry.attributes.position.version};
+    } else if (!modoDibujo && o.userData.dibujo){
+      const d = o.userData.dibujo;
+      o.remove(d.a, d.b);
+      o.material = d.mat;
+      delete o.userData.dibujo;
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+function capturarPlano(accion){
+  const W = 1200, H = 900;
+
+
+
+  const antes = {bg: scene.background, grid: grid ? grid.visible : null,
+                 pos: ojo.position.clone(), mira: controls.target.clone(),
+                 zoom: ojo.zoom, aspect: camera.aspect, halfH: orto.userData.halfH};
+  const teniaDibujo = modoDibujo;                                                 
+  if (!modoDibujo){ modoDibujo = true; aplicarDibujo(); }
+
+
+
+  const rej = grid;
+  if (rej) asm.remove(rej);
+  const box = new THREE.Box3().setFromObject(asm);
+  if (box.isEmpty()){ if (rej) asm.add(rej); return; }
+  const c = box.getCenter(new THREE.Vector3());
+  const r = box.getBoundingSphere(new THREE.Sphere()).radius;
+
+  const dir = ojo.position.clone().sub(controls.target).normalize();
+  const esOrto = (ojo === orto);
+  renderer.setSize(W, H, false);
+  camera.aspect = W / H;
+
+
+  camera.clearViewOffset();
+  orto.clearViewOffset();
+  if (esOrto){
+    orto.userData.halfH = r * 1.08 / Math.min(1, W / H);
+    orto.zoom = 1;
+    orto.near = 1; orto.far = 8 * r + 2;
+    encuadrarOrto();
+    orto.position.copy(c).addScaledVector(dir, 4 * r + 1);
+  } else {
+    const vf = THREE.MathUtils.degToRad(camera.fov);
+    const hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
+    const dd = r / Math.sin(Math.min(vf, hf) / 2) * 1.08;
+    camera.near = dd / 100; camera.far = dd * 100;
+    camera.position.copy(c).addScaledVector(dir, dd);
+    camera.updateProjectionMatrix();
+  }
+  ojo.lookAt(c);
+  ojo.updateMatrixWorld(true);
+  scene.background = new THREE.Color(0xffffff);
+  renderer.render(scene, ojo);
+
+
+  const imagen = renderer.domElement.toDataURL("image/png");
+  const etiquetas = [];
+  if (dims && $("bCota").classList.contains("on")){
+    dims.updateMatrixWorld(true);
+    const p = new THREE.Vector3();
+    dims.traverse(o => {
+      if (!o.isCSS2DObject) return;
+      p.setFromMatrixPosition(o.matrixWorld).project(ojo);
+      if (p.z < -1 || p.z > 1) return;
+      const el = o.element, i = el.querySelector("i");
+      etiquetas.push({x: +((p.x + 1) / 2 * 100).toFixed(2), y: +((1 - p.y) / 2 * 100).toFixed(2),
+                      tag: i ? i.textContent : "",
+                      valor: (el.lastChild && el.lastChild.nodeType === 3) ? el.lastChild.textContent : "",
+                      clave: el.classList.contains("key")});
+    });
+  }
+
+  if (!teniaDibujo){ modoDibujo = false; aplicarDibujo(); }
+  scene.background = antes.bg;
+  if (rej){ asm.add(rej); rej.visible = antes.grid; }
+  camera.aspect = antes.aspect;
+  orto.userData.halfH = antes.halfH;
+  ojo.position.copy(antes.pos);
+  ojo.zoom = antes.zoom;
+  controls.target.copy(antes.mira);
+  resize();
+  ojo.updateProjectionMatrix();
+  controls.update();
+  const m = ultimoMontaje ? ultimoMontaje.m : null;
+  parent.postMessage({tipo:"protab-conector3d", accion: accion || "plano", imagen, etiquetas, w:W, h:H,
+                      modelo: m ? m.id : "", titulo: $("hTitle").textContent,
+                      proyeccion: esOrto ? "isométrica" : "perspectiva",
+                      estilo: "dibujo"}, "*");
+  const b = $("bPlano"), txt = b.textContent;
+  b.textContent = "Al plano ✓";
+  setTimeout(() => { b.textContent = txt; }, 1500);
+}
+
+function _avisar(accion){
+  parent.postMessage({ tipo:'protab-conector3d', accion,
+    alto: memoria.alto, recto: memoria.recto, cabeza: memoria.cabeza }, '*');
+}
+$('bGuardar').onclick = () => _avisar('guardar');
+$('bCerrar').onclick  = () => _avisar('cerrar');
+
+
+let ventanaDividida = false;
+$('bDividir').onclick  = () => { if (!ventanaDividida) _avisar('dividir'); };
+$('bCompleta').onclick = () => { if (ventanaDividida) _avisar('dividir'); };
+
+(function () {
+  const K = 'protab_v3d_panel_plegado';
+  const poner = v => $('side').classList.toggle('plegado', v);
+  try { poner(localStorage.getItem(K) === '1'); } catch (e) {}
+  $('bPlegar').onclick = () => {
+    const v = !$('side').classList.contains('plegado');
+    poner(v);
+    try { localStorage.setItem(K, v ? '1' : '0'); } catch (e) {}
+    if (typeof correrVista === 'function') correrVista();
+  };
+})();
+addEventListener('message', ev => {
+  const m = ev.data;
+  if (!m || m.tipo !== 'protab-conector3d-estado') return;
+
+  ventanaDividida = !!m.dividida;
+  $('bDividir').classList.toggle('on', ventanaDividida);
+  $('bCompleta').classList.toggle('on', !ventanaDividida);
+});
+addEventListener('keydown', e => { if (e.key === 'Escape') _avisar('cerrar'); });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function frame(vista, dirVista){
+  const planta = (vista === "planta"), iso = (vista === "iso");
+
+
+
+  const orta = planta || iso || !!dirVista;
+
+
+  const dir = dirVista ? dirVista.clone().normalize()
+            : planta   ? new THREE.Vector3(0, 1, 0)
+                       : new THREE.Vector3(1, 1, 1).normalize();
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if (Math.abs(dir.y) > 0.999) dir.set(0, Math.sign(dir.y), 1e-4).normalize();
+
+
+  if (grid){ asm.remove(grid); grid.dispose(); grid = null; }
+
+  const box = new THREE.Box3().setFromObject(asm);
+  if (box.isEmpty()) return;
+
+  const c = box.getCenter(new THREE.Vector3());
+  const r = box.getBoundingSphere(new THREE.Sphere()).radius;
+  const vf = THREE.MathUtils.degToRad(camera.fov);
+  const hfTot = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
+
+
+
+
+
+
+  const tapado = fraccionTapada(canvas.clientWidth);
+  const hf = 2 * Math.atan(Math.tan(hfTot / 2) * (1 - tapado));
+  const d = r / Math.sin(Math.min(vf, hf) / 2) * 1.22;
+
+
+
+  const aim = orta ? c.clone() : c.clone().setY(c.y + r * 0.16);
+
+  ojo = orta ? orto : camera;
+  controls.object = ojo;
+  ojo.up.set(0, 1, 0);
+
+  if (orta){
+
+
+
+
+    const halfH = r * 1.22 * Math.max(1, 1 / (camera.aspect * (1 - tapado)));
+    orto.userData.halfH = halfH;
+    orto.zoom = 1;
+    encuadrarOrto();
+    orto.near = 1;
+    orto.far  = 8 * r + 2;
+    const D = 4 * r + 1;
+    orto.position.copy(aim).addScaledVector(dir, D);
+  } else {
+    camera.near = d / 100;
+    camera.far  = d * 100;
+    camera.position.set(aim.x + d*0.55, aim.y + d*0.42, aim.z + d*0.72);
+    camera.updateProjectionMatrix();
+  }
+
+
+
+
+
+
+
+
+  controls.target.copy(aim);
+  controls.update();
+  correrVista();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const cp = cajaPiezas();
+  const suelo = cp.isEmpty() ? box : cp;
+
+  const span = Math.max(suelo.max.x - suelo.min.x, suelo.max.z - suelo.min.z) * 2.2;
+  const step = Math.pow(10, Math.round(Math.log10(span / 12)));
+  grid = new THREE.GridHelper(Math.ceil(span/step)*step,
+                              Math.ceil(span/step), 0xaeb8c6, 0xcfd6df);
+  grid.position.set((suelo.min.x + suelo.max.x) / 2, suelo.min.y,
+                    (suelo.min.z + suelo.max.z) / 2);
+  grid.visible = $('bGrid').classList.contains('on');
+  asm.add(grid);
+}
+
+
+$('selSis').onchange = e => llenarModelos(+e.target.value);
+$('selMod').onchange = e => {
+  const m = SISTEMAS[+$('selSis').value].modelos.find(x => x.id === e.target.value);
+  mountModel(porId(m.id), m.fases);
+};
+
+
+
+$('bReset').onclick  = () => frame();
+$('bPlanta').onclick = () => frame('planta');
+$('bIso').onclick    = () => frame('iso');
+$('bDibujo').onclick = e => {
+  modoDibujo = !modoDibujo;
+  e.currentTarget.classList.toggle('on', modoDibujo);
+  aplicarDibujo();
+};
+$('bPlano').onclick  = () => capturarPlano();
+
+
+
+
+
+
+
+
+
+
+
+
+if (_q.get('auto') === 'plano'){
+  const aviso = extra => parent.postMessage(Object.assign(
+    {tipo:'protab-conector3d', accion:'plano-auto',
+     modelo: _q.get('modelo') || ''}, extra), '*');
+  Promise.resolve(_primerMontaje).then(() => new Promise(r => setTimeout(r, 80))).then(() => {
+    if ($('bCota').classList.contains('on')) $('bCota').click();
+    frame('iso');
+    capturarPlano('plano-auto');
+  }).catch(e => aviso({error: String(e && e.message || e)}));
+}
+$('bCota').onclick  = e => {
+  cotasTocadas = true;
+  const on = !e.target.classList.contains('on');
+  e.target.classList.toggle('on', on);
+  setDimsVisible(on);
+};
+$('bPin').onclick = e => {
+  const on = !e.target.classList.contains('on');
+  e.target.classList.toggle('on', on);
+  if (pin) pin.visible = on;
+};
+$('bGrid').onclick = e => {
+  const on = !e.target.classList.contains('on');
+  e.target.classList.toggle('on', on);
+  if (grid) grid.visible = on;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const CUBO_LADO = 104, CUBO_AIRE = 16;
+const escCubo = new THREE.Scene();
+
+
+
+
+const camCubo = new THREE.OrthographicCamera(-0.95, 0.95, 0.95, -0.95, 0.1, 50);
+
+function caraCubo(txt){
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d");
+  g.fillStyle = "#ffffff"; g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = "#b8c2d0"; g.lineWidth = 5; g.strokeRect(2.5, 2.5, 123, 123);
+  g.fillStyle = "#16202e";
+  g.font = '600 20px "Segoe UI",system-ui,Arial,sans-serif';
+  g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillText(txt, 64, 64);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
+
+
+
+const CUBO_CARAS = ["DCHA", "IZQDA", "PLANTA", "ABAJO", "FRENTE", "ATRÁS"];
+const cuboMats = CUBO_CARAS.map(t => new THREE.MeshBasicMaterial({map: caraCubo(t)}));
+const cubo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), cuboMats);
+escCubo.add(cubo);
+escCubo.add(new THREE.LineSegments(
+  new THREE.EdgesGeometry(cubo.geometry),
+  new THREE.LineBasicMaterial({color: 0x5b6778})));
+
+const rayCubo = new THREE.Raycaster();
+let caraSobre = -1;
+
+
+
+
+
+
+
+function regionCubo(){
+  const s = CUBO_LADO, W = canvas.clientWidth;
+  const x = W - 16 - s;
+  const y = Math.round($("arribaDer").getBoundingClientRect().bottom) + CUBO_AIRE;
+  const libre = $("side").getBoundingClientRect().right + CUBO_AIRE;
+  return (x < libre) ? null : {x, y, s};
+}
+
+
+
+
+
+function zonaCubo(ev){
+  const R = regionCubo();
+  if (!R) return null;
+  const dx = ev.clientX - R.x, dy = ev.clientY - R.y;
+  if (dx < 0 || dy < 0 || dx > R.s || dy > R.s) return null;
+  rayCubo.setFromCamera(
+    new THREE.Vector2(dx / R.s * 2 - 1, -(dy / R.s) * 2 + 1), camCubo);
+  const h = rayCubo.intersectObject(cubo, false)[0];
+  if (!h) return {fuera: true};
+  const p = h.point, T = 0.34;
+  const v = new THREE.Vector3(
+    Math.abs(p.x) > T ? Math.sign(p.x) : 0,
+    Math.abs(p.y) > T ? Math.sign(p.y) : 0,
+    Math.abs(p.z) > T ? Math.sign(p.z) : 0);
+  if (v.lengthSq() === 0) return {fuera: true};
+  return {dir: v, cara: h.face.materialIndex};
+}
+
+
+
+function sobreCubo(i){
+  if (i === caraSobre) return;
+  if (caraSobre >= 0) cuboMats[caraSobre].color.set(0xffffff);
+  caraSobre = i;
+  if (i >= 0) cuboMats[i].color.set(0xffdcb5);
+  canvas.style.cursor = (i >= 0) ? "pointer" : "";
+}
+
+
+
+
+canvas.addEventListener("pointerdown", ev => {
+  const z = zonaCubo(ev);
+  if (!z) return;
+  ev.stopPropagation();
+  ev.preventDefault();
+  if (z.dir) frame(null, z.dir);
+}, true);
+canvas.addEventListener("pointermove", ev => {
+  const z = zonaCubo(ev);
+  sobreCubo(z && z.cara !== undefined ? z.cara : -1);
+});
+canvas.addEventListener("pointerleave", () => sobreCubo(-1));
+
+
+$('bDetalles').onclick = e => {
+  const recogido = $('side').classList.toggle('recogido');
+  e.target.textContent = recogido ? 'Ver detalles' : 'Ocultar detalles';
+};
+
+
+
+
+
+
+function encuadrarOrto(){
+  const h = orto.userData.halfH || 1, w = h * camera.aspect;
+  orto.left = -w; orto.right = w; orto.top = h; orto.bottom = -h;
+  orto.updateProjectionMatrix();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function fraccionTapada(W){
+  return 0;
+}
+
+function correrVista(){
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  if (!(W > 0 && H > 0)) return;
+  const tapado = fraccionTapada(W);
+  const dx = Math.round(W * tapado / 2);
+  camera.setViewOffset(W, H, dx, 0, W, H);
+  orto.setViewOffset(W, H, dx, 0, W, H);
+}
+
+function resize(){
+  renderer.setSize(innerWidth, innerHeight, false);
+  labels.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  encuadrarOrto();
+  correrVista();
+}
+addEventListener('resize', resize);
+resize();
+
+renderer.setAnimationLoop(() => {
+  if (modoDibujo) aplicarDibujo();                                            
+  controls.update();
+  renderer.render(scene, ojo);
+  labels.render(scene, ojo);
+  pintarCubo();
+});
+
+
+
+
+
+
+let casaEn = '';
+function ubicarCasa(R){
+  let x, y;
+  if (R){ x = Math.round(R.x - 6); y = Math.round(R.y - 6); }
+  else {
+    const a = $('arribaDer').getBoundingClientRect();
+    x = Math.round(a.left - 30); y = Math.round(a.top + (a.height - 24) / 2);
+  }
+  const k = x + ',' + y;
+  if (k === casaEn) return;
+  casaEn = k;
+  const b = $('bReset');
+  b.style.left = x + 'px';
+  b.style.top = y + 'px';
+}
+
+
+
+
+
+
+function pintarCubo(){
+  const R = regionCubo();
+  ubicarCasa(R);
+  if (!R) return;
+  const d = ojo.position.clone().sub(controls.target);
+  if (d.lengthSq() < 1e-9) return;
+  camCubo.position.copy(d.normalize()).multiplyScalar(6);
+  camCubo.up.copy(ojo.up);
+  camCubo.lookAt(0, 0, 0);
+  const yWebGL = canvas.clientHeight - R.y - R.s;
+
+
+
+
+  const borraba = renderer.autoClear;
+  renderer.autoClear = false;
+  renderer.clearDepth();
+  renderer.setScissorTest(true);
+  renderer.setViewport(R.x, yWebGL, R.s, R.s);
+  renderer.setScissor(R.x, yWebGL, R.s, R.s);
+  renderer.render(escCubo, camCubo);
+  renderer.setScissorTest(false);
+  renderer.autoClear = borraba;
+  renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+}
+
+
+
+window.__3d = {renderer, scene, asm, get ojo(){ return ojo; }, controls};
+</script>
+</body>
+</html>

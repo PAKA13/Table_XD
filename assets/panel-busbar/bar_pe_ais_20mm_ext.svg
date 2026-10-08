@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="230 180 1215 815" width="150" height="100" preserveAspectRatio="none" overflow="hidden">
+	<style>
+		.s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-linejoin: round;stroke-width: 8 }
+	</style>
+	<defs>
+		<mask id="hole">
+			<rect x="230" y="180" width="1215" height="815" fill="white"/>
+			<circle cx="636.76" cy="585.56" r="140.28" fill="black"/>
+		</mask>
+	</defs>
+	<rect x="235.84" y="184.88" width="1202.16" height="801.6" fill="#00ff00" mask="url(#hole)"/>
+	<path class="s0" d="M235.84 986.48v-801.6h1202.16m0 801.6h-1202.16M777.04 585.56c0-77.47-62.81-140.28-140.28-140.28-77.47 0-140.28 62.81-140.28 140.28 0 77.47 62.81 140.28 140.28 140.28 77.47 0 140.28-62.81 140.28-140.28z"/>
+</svg>
